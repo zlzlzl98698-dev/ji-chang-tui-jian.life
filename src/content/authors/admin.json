@@ -1,9 +1,8 @@
 {
   "name": "Admin",
-  "bio": "Site administrator and content editor for the Astro Cloudflare starter.",
-  "avatar": "/images/author.jpg",
+  "bio": "机场推荐评测团队，专注网络加速性能基准评测与跨境外贸加速方案。",
+  "avatar": "/favicon.svg",
   "social": {
-    "github": "milzamsz",
-    "linkedin": "milzamsz"
+    "email": "contact@ji-chang-tui-jian.life"
   }
 }

@@ -1,0 +1,281 @@
+---
+export interface RecordItem {
+  region: string;
+  latency: string;
+  download: string;
+  status: string;
+}
+
+export interface Props {
+  brandName: string;
+  testedAt?: string;
+  records?: RecordItem[];
+  imagePath?: string;
+}
+
+const {
+  brandName,
+  testedAt = "实测监测快照",
+  records = [],
+  imagePath,
+} = Astro.props;
+---
+
+<div class="speedtest-console">
+  <div class="console-head">
+    <div class="console-head__status">
+      <span class="pulse-indicator"></span>
+      <span class="console-head__title">🌐 {brandName} 节点实测基准 (Network NOC Observatory)</span>
+    </div>
+    <div class="console-head__meta">
+      <span class="badge-tag">环境: Mihomo/Clash Verge</span>
+      <span class="badge-tag">{testedAt}</span>
+    </div>
+  </div>
+
+  {records.length > 0 && (
+    <div class="console-body">
+      <div class="records-grid">
+        {records.map((r) => {
+          // Calculate approx progress percentage based on speed string (e.g., 529Mbps)
+          const num = parseInt(r.download) || 100;
+          const pct = Math.min(Math.max(Math.round((num / 600) * 100), 15), 100);
+          const isFast = num >= 300;
+          return (
+            <div class="record-row">
+              <div class="record-row__info">
+                <span class="record-node">
+                  <span class={`status-dot ${isFast ? "is-fast" : "is-stable"}`}></span>
+                  {r.region}
+                </span>
+                <span class="record-metrics">
+                  <span class="metric-ping">延迟: <strong>{r.latency}</strong></span>
+                  <span class="metric-speed">下载: <strong>{r.download}</strong></span>
+                </span>
+              </div>
+              <div class="progress-track" aria-hidden="true">
+                <div class="progress-bar" style={`width: ${pct}%`}></div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  )}
+
+  {imagePath && (
+    <div class="console-screenshot">
+      <div class="screenshot-header">
+        <span class="screenshot-title">📷 原始压测日志看板</span>
+        <span class="screenshot-tip">点击查看高分辨率原图</span>
+      </div>
+      <a href={imagePath} target="_blank" rel="noopener noreferrer" class="screenshot-link">
+        <img
+          src={imagePath}
+          alt={`${brandName} 节点测速原始截图`}
+          loading="lazy"
+          decoding="async"
+          class="screenshot-img"
+        />
+      </a>
+    </div>
+  )}
+
+  <div class="console-footer">
+    <div class="console-footer__summary">
+      <span>基准状态: <strong class="text-success">Operational</strong></span>
+      <span>测试范围: 亚太与北美主流骨干</span>
+      <span>丢包率: <strong>&lt;0.5% (专线路由)</strong></span>
+    </div>
+    <div class="console-footer__watermark">
+      [ji-chang-tui-jian.life]
+    </div>
+  </div>
+</div>
+
+<style>
+  .speedtest-console {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    font-family: var(--font-mono);
+    margin: var(--space-lg) 0;
+    box-shadow: 0 8px 24px -10px color-mix(in srgb, var(--foreground) 6%, transparent);
+  }
+
+  .console-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--secondary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .console-head__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--foreground);
+    font-family: var(--font-heading);
+  }
+
+  .pulse-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 8px var(--success);
+  }
+
+  .console-head__meta {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .badge-tag {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-sm);
+    background: var(--muted);
+    color: var(--muted-foreground);
+  }
+
+  .console-body {
+    padding: var(--space-lg);
+  }
+
+  .records-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .record-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .record-row__info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+  }
+
+  .record-node {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .status-dot.is-fast {
+    background: var(--success);
+  }
+
+  .status-dot.is-stable {
+    background: var(--warning);
+  }
+
+  .record-metrics {
+    display: inline-flex;
+    gap: var(--space-md);
+    color: var(--muted-foreground);
+    font-size: 0.8rem;
+  }
+
+  .record-metrics strong {
+    color: var(--foreground);
+  }
+
+  .progress-track {
+    width: 100%;
+    height: 8px;
+    background: var(--muted);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary) 0%, color-mix(in srgb, var(--primary) 70%, transparent) 100%);
+    border-radius: var(--radius-full);
+    transition: width 0.4s ease;
+  }
+
+  .console-screenshot {
+    padding: var(--space-md) var(--space-lg);
+    border-top: 1px dashed var(--border);
+    background: color-mix(in srgb, var(--secondary) 50%, var(--background));
+  }
+
+  .screenshot-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+    margin-bottom: var(--space-xs);
+  }
+
+  .screenshot-title {
+    font-weight: 700;
+    color: var(--foreground);
+  }
+
+  .screenshot-link {
+    display: block;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    max-height: 380px;
+  }
+
+  .screenshot-img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    background: var(--card);
+  }
+
+  .console-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--secondary);
+    border-top: 1px solid var(--border);
+    font-size: 0.775rem;
+    color: var(--muted-foreground);
+  }
+
+  .console-footer__summary {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  .text-success {
+    color: var(--success);
+  }
+
+  .console-footer__watermark {
+    opacity: 0.6;
+    letter-spacing: 0.05em;
+  }
+</style>

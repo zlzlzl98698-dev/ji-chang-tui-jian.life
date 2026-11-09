@@ -1,0 +1,112 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { comprehensiveFaqs } from "../../data/topics/faqData";
+import { airports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const faqs = comprehensiveFaqs.filter((f) => f.category === "billing");
+const guangsu = airports.find((a) => a.slug === "guangsu") || airports[0];
+---
+
+<MarketingLayout
+  title="资费与账户避坑 FAQ (2026最新) | 机场life"
+  description="解答机场购买中的付款安全、月付与年付避坑、退款争议、防封换域名以及流量重置规则，帮助用户避开跑路风险与资金损失。"
+  locale={locale}
+  path="/faq/billing"
+>
+  <article class="container py-12 max-w-5xl mx-auto">
+    <nav class="breadcrumb mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">首页</a></li>
+        <li><span>/</span></li>
+        <li><a href="/faq" class="hover:text-primary transition-colors">机场FAQ</a></li>
+        <li><span>/</span></li>
+        <li class="text-foreground font-medium" aria-current="page">资费与账户避坑</li>
+      </ol>
+    </nav>
+
+    <header class="page-head max-w-4xl mb-12">
+      <div class="inline-badge mb-3">FAQ 细分专题 · 交易与资费</div>
+      <h1 class="page-title mb-4">资费选择、交易安全与防跑路避坑指南</h1>
+      <p class="page-lead">
+        年付打折到底能不能冲？微信支付宝付款会不会被风控？本专栏带你识破不良机场主的圈钱套路，守护个人资金与消费权益。
+      </p>
+    </header>
+
+    <div class="space-y-6 mb-16">
+      {faqs.map((item) => (
+        <div class="p-6 rounded-xl border border-border bg-card space-y-4">
+          <h2 class="text-lg font-bold text-foreground">❓ {item.question}</h2>
+          <div class="p-3 rounded-lg bg-muted text-xs text-foreground font-medium">
+            <strong>核心简答：</strong> {item.shortAnswer}
+          </div>
+          <p class="text-sm text-muted-foreground leading-relaxed">{item.fullAnswer}</p>
+          {item.actionSteps && (
+            <div class="p-4 rounded-lg border border-border bg-card/60 text-xs text-muted-foreground space-y-1">
+              <strong class="text-foreground block mb-1">🛠️ 建议操作：</strong>
+              <ul class="list-disc list-inside space-y-1">
+                {item.actionSteps.map((s) => (<li>{s}</li>))}
+              </ul>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+
+    <!-- Spotlight -->
+    <div class="p-6 rounded-2xl border border-primary/40 bg-card flex flex-col md:flex-row items-center justify-between gap-6">
+      <div>
+        <h3 class="font-bold text-foreground mb-1">正规老牌保障：光速云企业合规商户结算</h3>
+        <p class="text-xs text-muted-foreground">支持正规支付宝、微信收银台与 USDT 支付，99元/年无套路，支持工单急速响应。</p>
+      </div>
+      <a
+        href={guangsu.affLink}
+        target="_blank"
+        rel="nofollow sponsored noopener"
+        class="cta-btn cta-primary whitespace-nowrap"
+      >
+        前往光速云官网 (优惠码 AMM)
+      </a>
+    </div>
+  </article>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--primary);
+  }
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .page-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+</style>

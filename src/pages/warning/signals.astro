@@ -1,0 +1,111 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { sixWarningSignals } from "../../data/topics/warningData";
+import { airports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const guangsu = airports.find((a) => a.slug === "guangsu") || airports[0];
+---
+
+<MarketingLayout
+  title="如何精准识别机场跑路前兆？6大反常信号全景排查指南 | 机场life"
+  description="深度解析翻墙机场暴雷前的6大异常征兆：三年付断崖促销、TG群全员禁言、频繁更换个人收款码与断网超48小时。教你提前止损避险。"
+  locale={locale}
+  path="/warning/signals"
+>
+  <article class="container py-12 max-w-5xl mx-auto">
+    <nav class="breadcrumb mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">首页</a></li>
+        <li><span>/</span></li>
+        <li><a href="/warning" class="hover:text-primary transition-colors">跑路预警</a></li>
+        <li><span>/</span></li>
+        <li class="text-foreground font-medium" aria-current="page">跑路前兆识别</li>
+      </ol>
+    </nav>
+
+    <header class="page-head max-w-4xl mb-12">
+      <div class="inline-badge mb-3">预警研判 · 前兆侦测</div>
+      <h1 class="page-title mb-4">精准识别机场跑路前兆：6 大反常危险信号</h1>
+      <p class="page-lead">
+        任何机场在决定弃盘关站前，都会出现异常的资金链或管理异常。掌握这 6 个核心研判指标，能让您在暴雷前从容撤出，避免被套牢。
+      </p>
+    </header>
+
+    <div class="space-y-6 mb-16">
+      {sixWarningSignals.map((item, idx) => (
+        <div class="p-6 rounded-xl border border-border bg-card space-y-3">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-destructive text-destructive-foreground font-bold flex items-center justify-center text-xs">
+              0{idx + 1}
+            </span>
+            <h2 class="text-lg font-bold text-foreground">{item.signalName}</h2>
+          </div>
+          <p class="text-sm text-muted-foreground leading-relaxed">
+            <strong class="text-foreground">表象：</strong>{item.phenomenon}
+          </p>
+          <div class="p-3 rounded-lg bg-muted text-xs space-y-1">
+            <div><strong class="text-foreground">深层诱因：</strong> {item.rootCause}</div>
+            <div class="text-primary"><strong class="text-foreground">应急操作：</strong> {item.actionGuidance}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Spotlight -->
+    <div class="p-6 rounded-2xl border border-primary/40 bg-card flex flex-col md:flex-row items-center justify-between gap-6">
+      <div>
+        <h3 class="font-bold text-foreground mb-1">与其整天担心跑路，不如选择稳定品牌</h3>
+        <p class="text-xs text-muted-foreground">光速云全天候 NOC 网络监控，真实用户口碑，99元/年高性价比首选。</p>
+      </div>
+      <a
+        href={guangsu.affLink}
+        target="_blank"
+        rel="nofollow sponsored noopener"
+        class="cta-btn cta-primary whitespace-nowrap"
+      >
+        直达光速云 (享专属优惠)
+      </a>
+    </div>
+  </article>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--primary);
+  }
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .page-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+</style>

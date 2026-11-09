@@ -1,0 +1,543 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { clientsData } from "../../data/clients";
+
+const locale = (Astro.currentLocale || "en") as "en";
+
+const categories = ["Windows", "Android", "iOS", "macOS", "Linux", "OpenWrt"] as const;
+
+const clientSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "2026各平台主流代理客户端配置与下载推荐指南",
+  description: "全平台（Windows/Android/iOS/macOS/Linux/路由器）代理客户端大全，涵盖 Clash Verge Rev、v2rayN、Shadowrocket 小火箭、Sing-box 等官方下载与配置教程。",
+  numberOfItems: clientsData.length,
+  itemListElement: clientsData.map((c, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: `${c.name} (${c.category})`,
+    description: c.description,
+  })),
+};
+---
+
+<MarketingLayout
+  title="主流代理客户端下载与配置指南 (Windows/Mac/iOS/Android/OpenWrt) | 机场life"
+  description="全平台科学上网代理客户端推荐与订阅配置教程：涵盖 Clash Verge Rev、v2rayN、Shadowrocket 小火箭、Sing-box、Surge 等主流客户端下载渠道、协议兼容性对比与TUN模式配置方法。"
+  locale={locale}
+  path="/clients"
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(clientSchema)} />
+
+  <section class="container py-12 max-w-5xl mx-auto">
+    <!-- Header -->
+    <header class="page-head text-center max-w-3xl mx-auto mb-12">
+      <div class="inline-badge mb-3">Client Ecosystem & Tutorials</div>
+      <h1 class="page-title mb-4">全平台代理客户端下载与配置指南</h1>
+      <p class="page-lead">
+        根据您的设备操作系统（Windows、Android、iOS、macOS、Linux、软路由）选择最稳定适配的客户端软件，轻松导入机场订阅链接，开启智能分流与高速网络。
+      </p>
+    </header>
+
+    <!-- Quick Workflow Steps -->
+    <div class="workflow-banner p-6 rounded-2xl border mb-16">
+      <h3 class="workflow-title mb-4">🚀 三步极速配置流程</h3>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <strong>获取机场订阅</strong>
+            <p>在 <a href="/airports/guangsu" class="inline-link">光速云</a> 或已购机场后台复制 Clash / V2Ray / Sing-box 订阅链接。</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <strong>导入对应客户端</strong>
+            <p>安装下方对应的客户端，点击“配置/订阅”粘贴链接并保存更新。</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <strong>启动智能分流</strong>
+            <p>选择推荐节点，开启“规则模式”或“TUN虚拟网卡模式”，国内直连国外加速。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Platform Categories Navigation -->
+    <div class="category-nav mb-10">
+      {categories.map((cat) => (
+        <a href={`#platform-${cat.toLowerCase()}`} class="cat-pill">
+          {cat}
+        </a>
+      ))}
+    </div>
+
+    <!-- Grouped Clients by Platform -->
+    <div class="platforms-container">
+      {categories.map((cat) => {
+        const items = clientsData.filter((c) => c.category === cat);
+        return (
+          <section class="platform-group mb-16" id={`platform-${cat.toLowerCase()}`}>
+            <div class="group-head mb-6">
+              <h2 class="group-title">
+                {cat === "Windows" && "💻 Windows 平台客户端推荐"}
+                {cat === "Android" && "📱 Android 安卓平台客户端推荐"}
+                {cat === "iOS" && "🍎 iOS / iPadOS 苹果平台客户端推荐"}
+                {cat === "macOS" && "🖥️ macOS 苹果电脑平台客户端推荐"}
+                {cat === "Linux" && "🐧 Linux 平台客户端推荐"}
+                {cat === "OpenWrt" && "📶 OpenWrt / 软路由固件插件推荐"}
+              </h2>
+              <span class="group-count">收录 {items.length} 款主流工具</span>
+            </div>
+
+            <div class="clients-grid">
+              {items.map((client) => (
+                <div class={`client-card ${client.isRecommended ? "is-recommended" : ""}`}>
+                  <div class="card-top">
+                    <div class="card-identity">
+                      <h3 class="client-name">{client.name}</h3>
+                      <span class={`client-badge ${client.isRecommended ? "is-primary-badge" : ""}`}>
+                        {client.badge}
+                      </span>
+                    </div>
+                    {client.isRecommended && (
+                      <span class="star-badge">🌟 编辑部首选</span>
+                    )}
+                  </div>
+
+                  <p class="client-desc">{client.description}</p>
+
+                  <div class="feature-tags mb-4">
+                    <span class="tag-label">协议支持:</span>
+                    <div class="tags-row">
+                      {client.protocols.map((proto) => (
+                        <span class="proto-tag">{proto}</span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div class="features-list mb-6">
+                    {client.features.map((f) => (
+                      <div class="feature-row">
+                        <span class="check-bullet">✓</span>
+                        <span class="feature-txt">{f}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div class="card-footer">
+                    <div class="download-hint">
+                      <span class="hint-icon">💡</span>
+                      <span class="hint-text">{client.downloadHint}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+
+    <!-- Common Troubleshooting FAQ -->
+    <section class="faq-section p-8 rounded-2xl border mb-16">
+      <h2 class="section-title mb-6">💡 客户端使用与网络调试常见疑问</h2>
+      <div class="faq-grid">
+        <div class="faq-item">
+          <h4 class="faq-q">1. iOS 系统如何下载 Shadowrocket (小火箭)？</h4>
+          <p class="faq-a">
+            由于中国大陆 App Store 政策限制，小火箭等工具已在国区下架。您只需注册一个美区 Apple ID（或购买美区礼品卡充值），登录海外 App Store 搜索购买（约 $2.99）即可正常更新与长期使用。
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h4 class="faq-q">2. TUN 虚拟网卡模式和普通系统代理有什么区别？</h4>
+          <p class="faq-a">
+            普通“系统代理”仅接管遵循系统代理协议的浏览器等应用；而“TUN 模式”会创建系统级虚拟网卡，强制接管所有终端流量（包括命令行、游戏、Steam客户端与原生桌面应用），彻底避免DNS泄漏与部分软件绕过代理的问题。
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h4 class="faq-q">3. 导入订阅后测试节点全部显示 Timeout (超时)？</h4>
+          <p class="faq-a">
+            第一步检查系统本地时间是否与北京时间准确同步（时间差超过90秒会导致TLS握手失败）；第二步检查是否开启了其他冲突代理插件；第三步在机场后台重新复制最新的订阅链接尝试重新更新。
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h4 class="faq-q">4. 为什么某些节点无法打开 ChatGPT 或 Netflix？</h4>
+          <p class="faq-a">
+            OpenAI 与 Netflix 对机房 IP 有严格风控。建议在客户端中选择带有“解锁”或“家庭宽带”标签的节点，或选用如 <a href="/airports/guangsu" class="inline-link">光速云</a> 这类具备企业原生住宅 IP 池的服务商。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom Conversion Banner -->
+    <div class="banner-bottom text-center p-8 rounded-2xl border">
+      <h3 class="banner-title mb-3">还没有好用的机场高速节点订阅？</h3>
+      <p class="banner-desc text-muted-foreground mb-6">
+        搭配 2026 年度推荐的优质专线网络，立即享受 4K 秒开、晚高峰超低延迟的极速体验。
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="/airports/guangsu" class="cta-btn cta-primary">
+          获取 Top 1 光速云专线订阅 (享折合¥8/月)
+        </a>
+        <a href="/rankings" class="cta-btn cta-secondary">
+          查看 2026 十大机场榜单
+        </a>
+      </div>
+    </div>
+  </section>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+  }
+
+  .page-title {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+    line-height: 1.2;
+  }
+
+  .page-lead {
+    font-size: 1.0625rem;
+    color: var(--muted-foreground);
+    line-height: 1.6;
+  }
+
+  /* Workflow */
+  .workflow-banner {
+    background: var(--card);
+    border-color: var(--border);
+  }
+
+  .workflow-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--foreground);
+  }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .steps-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .step-card {
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    background: var(--secondary);
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--muted-foreground);
+    line-height: 1;
+  }
+
+  .step-body strong {
+    display: block;
+    font-size: 0.9375rem;
+    color: var(--foreground);
+    margin-bottom: 0.25rem;
+  }
+
+  .step-body p {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .inline-link {
+    color: var(--foreground);
+    text-decoration: underline;
+    font-weight: 600;
+  }
+
+  /* Category Navigation */
+  .category-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .cat-pill {
+    padding: 0.4rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+
+  .cat-pill:hover {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  /* Platform Group */
+  .group-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.75rem;
+  }
+
+  .group-title {
+    font-size: 1.375rem;
+    font-weight: 800;
+    color: var(--foreground);
+  }
+
+  .group-count {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+  }
+
+  .clients-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .clients-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .client-card {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    background: var(--card);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.03);
+  }
+
+  .client-card.is-recommended {
+    border-color: var(--primary);
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+  }
+
+  .card-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .client-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0;
+  }
+
+  .client-badge {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    font-weight: 600;
+  }
+
+  .is-primary-badge {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  .star-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .client-desc {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+  }
+
+  .feature-tags {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .tag-label {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+  }
+
+  .tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .proto-tag {
+    font-size: 0.75rem;
+    padding: 0.1rem 0.35rem;
+    background: var(--secondary);
+    border-radius: 0.25rem;
+    color: var(--foreground);
+  }
+
+  .features-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .feature-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--foreground);
+  }
+
+  .check-bullet {
+    color: var(--primary);
+    font-weight: 800;
+  }
+
+  .download-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.65rem 0.75rem;
+    border-radius: 0.5rem;
+    background: var(--secondary);
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+  }
+
+  /* FAQ */
+  .faq-section {
+    background: var(--card);
+    border-color: var(--border);
+  }
+
+  .section-title {
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--foreground);
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .faq-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .faq-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .faq-q {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0;
+  }
+
+  .faq-a {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Bottom banner */
+  .banner-bottom {
+    background: var(--card);
+    border-color: var(--border);
+  }
+
+  .banner-title {
+    font-size: 1.375rem;
+    font-weight: 800;
+    color: var(--foreground);
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1.25rem;
+    border-radius: 0.65rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  .cta-secondary {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+  }
+
+  .cta-btn:hover {
+    opacity: 0.9;
+  }
+</style>

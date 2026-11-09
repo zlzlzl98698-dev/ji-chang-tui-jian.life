@@ -1,0 +1,105 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { rightsRecoverySop } from "../../data/topics/warningData";
+import { airports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const guangsu = airports.find((a) => a.slug === "guangsu") || airports[0];
+---
+
+<MarketingLayout
+  title="遭遇机场跑路如何维权与止损？支付宝/信用卡拒付退款 SOP | 机场life"
+  description="全网首份实操级机场跑路维权退款指南：教你如何固定电子证据、向支付宝商户发起未到货投诉，以及通过Visa/Mastercard信用卡发起服务未履约Chargeback拒付。"
+  locale={locale}
+  path="/warning/rights"
+>
+  <article class="container py-12 max-w-5xl mx-auto">
+    <nav class="breadcrumb mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">首页</a></li>
+        <li><span>/</span></li>
+        <li><a href="/warning" class="hover:text-primary transition-colors">跑路预警</a></li>
+        <li><span>/</span></li>
+        <li class="text-foreground font-medium" aria-current="page">维权止损SOP</li>
+      </ol>
+    </nav>
+
+    <header class="page-head max-w-4xl mb-12">
+      <div class="inline-badge mb-3">权益保障 · 实操手册</div>
+      <h1 class="page-title mb-4">遭遇机场跑路如何最大限度维权与止损</h1>
+      <p class="page-lead">
+        很多用户在机场跑路后自认倒霉，事实上只要支付渠道正规，通过金融风控机制发起拒付或投诉，有极大概率挽回资金损失。以下是标准实操步骤。
+      </p>
+    </header>
+
+    <div class="space-y-6 mb-16">
+      {rightsRecoverySop.steps.map((item) => (
+        <div class="p-6 rounded-xl border border-border bg-card space-y-3">
+          <div class="flex items-center gap-3">
+            <span class="w-7 h-7 rounded-full bg-primary text-primary-foreground font-black flex items-center justify-center text-xs">
+              0{item.step}
+            </span>
+            <h2 class="text-lg font-bold text-foreground">{item.title}</h2>
+          </div>
+          <p class="text-sm text-muted-foreground leading-relaxed pl-10">{item.detail}</p>
+        </div>
+      ))}
+    </div>
+
+    <!-- Spotlight -->
+    <div class="p-6 rounded-2xl border border-primary/40 bg-card flex flex-col md:flex-row items-center justify-between gap-6">
+      <div>
+        <h3 class="font-bold text-foreground mb-1">建立长效安全感：选择光速云 8元/月</h3>
+        <p class="text-xs text-muted-foreground">深港物理专线，99元年付价格极低，彻底杜绝高额资金沉淀风险，省心高效。</p>
+      </div>
+      <a
+        href={guangsu.affLink}
+        target="_blank"
+        rel="nofollow sponsored noopener"
+        class="cta-btn cta-primary whitespace-nowrap"
+      >
+        直达光速云 (享专属优惠)
+      </a>
+    </div>
+  </article>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--primary);
+  }
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .page-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+</style>

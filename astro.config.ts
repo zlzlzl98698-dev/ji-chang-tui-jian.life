@@ -104,6 +104,7 @@ function contentValidationIntegration() {
 
 export default defineConfig({
   site: siteConfig.url,
+  trailingSlash: "always",
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
@@ -121,10 +122,10 @@ export default defineConfig({
         SiteTitle: "./src/components/docs/SiteTitle.astro",
       },
       editLink: {
-        baseUrl: "https://github.com/milzamsz/astro-cloudflare-starter/edit/main",
+        baseUrl: "https://ji-chang-tui-jian.life/docs",
       },
       social: [
-        { icon: "github", label: "GitHub", href: "https://github.com/milzamsz/astro-cloudflare-starter" },
+        { icon: "external", label: "Home", href: "/" },
       ],
       sidebar: [
         {
@@ -156,6 +157,7 @@ export default defineConfig({
     mdx(),
     contentValidationIntegration(),
     sitemap({
+      filter: (page) => !page.includes("/docs") && !page.includes("/404"),
       i18n: {
         defaultLocale: "en",
         locales: {
@@ -171,6 +173,8 @@ export default defineConfig({
       SITE_URL: envField.string({ context: "server", access: "public", default: "http://localhost:4321" }),
       GOOGLE_SITE_VERIFICATION: envField.string({ context: "server", access: "public", optional: true }),
       BING_SITE_VERIFICATION: envField.string({ context: "server", access: "public", optional: true }),
+      SHENMA_SITE_VERIFICATION: envField.string({ context: "server", access: "public", optional: true }),
+      BAIDU_SITE_VERIFICATION: envField.string({ context: "server", access: "public", optional: true }),
       PUBLIC_GA_MEASUREMENT_ID: envField.string({ context: "client", access: "public", optional: true }),
       PUBLIC_GTM_ID: envField.string({ context: "client", access: "public", optional: true }),
       PUBLIC_CONSENT_ENABLED: envField.boolean({ context: "client", access: "public", optional: true, default: false }),

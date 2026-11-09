@@ -1,0 +1,189 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { getAirportsByCategory } from "../../data/topics/recommendationsData";
+import { airports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const catAirports = getAirportsByCategory("streaming");
+const guangsu = airports.find((a) => a.slug === "guangsu") || airports[0];
+---
+
+<MarketingLayout
+  title="Netflix/Disney+/YouTube 4K 流媒体解锁专线机场推荐 (2026最新横评) | 机场life"
+  description="2026年国际流媒体与影视发烧友专属机场推荐：全量原生住宅双ISP IP落地，完美解锁Netflix非自制剧、Disney+全球库、YouTube Premium 4K/8K秒开与ChatGPT-4o。"
+  locale={locale}
+  path="/recommendations/streaming"
+>
+  <article class="container py-12 max-w-5xl mx-auto">
+    <nav class="breadcrumb mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">首页</a></li>
+        <li><span>/</span></li>
+        <li><a href="/recommendations" class="hover:text-primary transition-colors">选购指南</a></li>
+        <li><span>/</span></li>
+        <li class="text-foreground font-medium" aria-current="page">流媒体解锁专题</li>
+      </ol>
+    </nav>
+
+    <header class="page-head max-w-4xl mb-12">
+      <div class="inline-badge mb-3">流媒体解锁专题 · 极致视听体验</div>
+      <h1 class="page-title mb-4">Netflix/Disney+/YouTube 4K 流媒体解锁专线评测</h1>
+      <p class="page-lead">
+        告别『Netflix 只能看自制剧』与『YouTube 4K 频繁转圈』的糟糕体验。本专题只收录具备原生住宅双 ISP IP 纯净落地、单线程突发带宽 &gt; 100Mbps 的发烧级影音专线。
+      </p>
+    </header>
+
+    <!-- Top Pick Box -->
+    <div class="p-6 rounded-2xl border border-primary/40 bg-card mb-12">
+      <div class="flex items-center gap-2 text-xs font-bold text-primary mb-2">
+        <span>🏆 流媒体专题第一名 · 原生住宅双 ISP 网关</span>
+      </div>
+      <h2 class="text-2xl font-bold text-foreground mb-2">光速云 (Guangsu Cloud) —— 4K HDR 杜比视界秒开标杆</h2>
+      <p class="text-sm text-muted-foreground mb-4 leading-relaxed">
+        针对港台、美日、新英等核心流媒体区域配置专属 DNS 劫持与原生 IP 洗标池。Netflix 完整非自制剧库与 Disney+ 全量解锁，YouTube 4K 60FPS 码率瞬时突破 180,000 Kbps，缓冲条超前预载无卡顿。
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <a
+          href={guangsu.affLink}
+          target="_blank"
+          rel="nofollow sponsored noopener"
+          class="cta-btn cta-primary"
+        >
+          直达光速云官网 (优惠码 AMM)
+        </a>
+        <a href="/airports/guangsu" class="cta-btn cta-secondary">
+          查看光速云流媒体测速
+        </a>
+      </div>
+    </div>
+
+    <!-- Recommended List -->
+    <section class="mb-14">
+      <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+        <span class="indicator-dot"></span> 经 NOC 实验室全量流媒体压测精选品牌
+      </h2>
+      <div class="space-y-6">
+        {catAirports.map((airport, idx) => (
+          <div class="p-6 rounded-xl border border-border bg-card flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div class="space-y-2">
+              <div class="flex items-center gap-3">
+                <span class="text-sm font-bold text-muted-foreground">0{idx + 1}</span>
+                <h3 class="text-lg font-bold text-foreground">
+                  <a href={`/airports/${airport.slug}`} class="hover:text-primary transition-colors">
+                    {airport.name}
+                  </a>
+                </h3>
+                <span class="px-2 py-0.5 rounded text-xs bg-muted text-muted-foreground font-medium">
+                  {airport.lineType}
+                </span>
+              </div>
+              <p class="text-xs text-muted-foreground max-w-xl">{airport.description}</p>
+              <div class="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                <span>解锁平台：<strong class="text-primary">Netflix / Disney+ / HBO / Prime Video</strong></span>
+                <span>·</span>
+                <span>起步价：{airport.minPrice}</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 w-full md:w-auto shrink-0">
+              <a
+                href={airport.affLink}
+                target="_blank"
+                rel="nofollow sponsored noopener"
+                class="cta-btn cta-primary text-xs"
+              >
+                访问官网
+              </a>
+              <a href={`/airports/${airport.slug}`} class="cta-btn cta-secondary text-xs">
+                详细评测
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Deep Analysis -->
+    <section class="prose-section mb-14">
+      <h2 class="section-title">流媒体解锁核心知识：机房 IP 与原生双 ISP 区别</h2>
+      <div class="space-y-4 text-sm text-muted-foreground leading-relaxed">
+        <p>
+          很多用户不理解为什么换了几个节点还是看不了 Netflix 独播剧。原因在于 Netflix、Hulu、Disney+ 等流媒体公司购买了商业 IP 欺诈数据库（如 MaxMind、IP2Location）。
+        </p>
+        <p>
+          如果您的节点 IP 归属于商业数据中心（Data Center，如 AWS、Cloudflare、DigitalOcean），流媒体会直接将其标记为『商业机房代理』，从而实行锁区保护；而拥有【原生住宅双 ISP（Residential Dual-ISP）】属性的节点，其在各大数据库中与当地普通居民家里的宽带（如美国 AT&T、康卡斯特，香港香港宽频 HKBN）完全一致，因此能够 100% 完美解锁所有版权剧目。
+        </p>
+      </div>
+    </section>
+
+    <!-- Navigation Hub Footer -->
+    <div class="p-6 rounded-xl border border-border bg-muted/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <h4 class="font-bold text-sm text-foreground">探索其他细分场景选购指南</h4>
+        <p class="text-xs text-muted-foreground">涵盖IEPL企业专线、平价月付与按量计费全景推荐</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="/recommendations/iepl" class="cta-btn cta-secondary text-xs">IEPL企业专线</a>
+        <a href="/recommendations/budget" class="cta-btn cta-secondary text-xs">平价性价比</a>
+        <a href="/recommendations/non-expiring" class="cta-btn cta-secondary text-xs">按量不限时</a>
+      </div>
+    </div>
+  </article>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--primary);
+  }
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .page-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .indicator-dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 9999px;
+    background: var(--primary);
+    display: inline-block;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  .cta-secondary {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    border: 1px solid var(--border);
+  }
+  .section-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--foreground);
+    margin-bottom: 1rem;
+  }
+</style>

@@ -1,0 +1,209 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { comprehensiveFaqs, faqCategories } from "../../data/topics/faqData";
+import { airports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const guangsu = airports.find((a) => a.slug === "guangsu") || airports[0];
+
+const faqPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: comprehensiveFaqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.shortAnswer + " " + faq.fullAnswer,
+    },
+  })),
+};
+---
+
+<MarketingLayout
+  title="机场常见问题全场景 FAQ 百科全书 (2026年最新排障指南) | 机场life"
+  description="全网最详尽的翻墙梯子常见问题FAQ与排障百科：涵盖VLESS/Reality协议解析、Clash/Sing-box客户端报错修复、ChatGPT 1020封禁解决、Netflix解锁与资费防跑路指南。"
+  locale={locale}
+  path="/faq"
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(faqPageSchema)} />
+
+  <article class="container py-12 max-w-5xl mx-auto">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">首页</a></li>
+        <li><span>/</span></li>
+        <li class="text-foreground font-medium" aria-current="page">机场 FAQ 全景百科</li>
+      </ol>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="page-head text-center max-w-4xl mx-auto mb-14">
+      <div class="inline-badge mb-3">知识中心 · 权威百科全书</div>
+      <h1 class="page-title mb-4">机场常见问题全场景 FAQ 百科全书</h1>
+      <p class="page-lead">
+        聚合 4 大核心领域的高频痛点疑难排障。从网络协议底层机制到客户端报错代码，从流媒体防封到账户交易安全，帮您快速排除故障，畅享极速网络。
+      </p>
+    </header>
+
+    <!-- Category Hubs Navigation Grid -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-14">
+      {faqCategories.map((cat) => (
+        <a href={`/faq/${cat.id}`} class="p-5 rounded-xl border border-border bg-card hover:border-primary transition-all flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-bold text-primary mb-1 block">细分专栏</span>
+            <h3 class="font-bold text-base text-foreground mb-2">{cat.name}</h3>
+            <p class="text-xs text-muted-foreground line-clamp-2">{cat.description}</p>
+          </div>
+          <div class="mt-4 text-xs font-semibold text-primary">进入专属专栏 →</div>
+        </a>
+      ))}
+    </section>
+
+    <!-- Guangsu Spotlight -->
+    <section class="p-6 rounded-2xl border border-primary/30 bg-card mb-16 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="space-y-2">
+        <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-[11px] font-bold bg-primary/20 text-primary">
+          🏆 彻底告别 90% 疑难杂症的极简解法
+        </div>
+        <h2 class="text-xl font-bold text-foreground">
+          选用光速云企业级专线：免折腾、零拥堵、协议开箱即用
+        </h2>
+        <p class="text-xs text-muted-foreground max-w-2xl leading-relaxed">
+          绝大多数常见的“晚高峰断流、ChatGPT 1020 拒绝、UDP 限速”问题，根源都在于使用了劣质公网直连节点。光速云采用深港物理内网直连与双 ISP 纯净原生住宅出口，99元/年即可获得极客级省心体验。
+        </p>
+      </div>
+      <a
+        href={guangsu.affLink}
+        target="_blank"
+        rel="nofollow sponsored noopener"
+        class="cta-btn cta-primary whitespace-nowrap px-6 py-2.5 text-xs font-bold shrink-0"
+      >
+        直达光速云 (享专属优惠)
+      </a>
+    </section>
+
+    <!-- All FAQs List grouped by Category -->
+    <section class="space-y-12 mb-16">
+      {faqCategories.map((cat) => {
+        const catFaqs = comprehensiveFaqs.filter((f) => f.category === cat.id);
+        return (
+          <div class="category-faq-group">
+            <div class="flex items-center justify-between border-b border-border pb-3 mb-6">
+              <h2 class="text-xl font-extrabold text-foreground flex items-center gap-2">
+                <span class="indicator-dot"></span>
+                {cat.name} ({catFaqs.length})
+              </h2>
+              <a href={`/faq/${cat.id}`} class="text-xs text-primary font-bold hover:underline">
+                查看本类完整长文 →
+              </a>
+            </div>
+
+            <div class="space-y-4">
+              {catFaqs.map((item) => (
+                <details class="faq-accordion-item p-5 rounded-xl border border-border bg-card">
+                  <summary class="font-bold text-foreground text-sm cursor-pointer flex items-start justify-between gap-4">
+                    <span class="flex-1">❓ {item.question}</span>
+                    <span class="text-primary text-xs font-semibold shrink-0">点击查看排障</span>
+                  </summary>
+
+                  <div class="mt-4 pt-4 border-t border-border space-y-3 text-xs leading-relaxed text-muted-foreground">
+                    <div class="p-3 rounded-lg bg-muted text-foreground font-medium">
+                      💡 <strong>快速结论：</strong> {item.shortAnswer}
+                    </div>
+
+                    <p>{item.fullAnswer}</p>
+
+                    {item.actionSteps && item.actionSteps.length > 0 && (
+                      <div class="p-3 rounded-lg border border-border/80 bg-card">
+                        <strong class="text-foreground block mb-1.5">🛠️ 推荐标准解决步骤 (SOP)：</strong>
+                        <ol class="list-decimal list-inside space-y-1 pl-1">
+                          {item.actionSteps.map((step) => (
+                            <li>{step}</li>
+                          ))}
+                        </ol>
+                      </div>
+                    )}
+
+                    <div class="flex flex-wrap gap-1.5 pt-2">
+                      {item.tags.map((tag) => (
+                        <span class="px-2 py-0.5 rounded text-[10px] bg-muted text-muted-foreground">
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </section>
+
+    <!-- Support Help Box -->
+    <section class="p-8 rounded-2xl bg-muted/40 border border-border text-center">
+      <h3 class="text-lg font-bold text-foreground mb-2">仍有其他复杂网络问题未得到解答？</h3>
+      <p class="text-xs text-muted-foreground max-w-md mx-auto mb-6">
+        欢迎查阅我们的《客户端大全》详尽手册，或者查看 42 家机场的独立详尽评测报告。
+      </p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href="/clients" class="cta-btn cta-secondary text-xs">查看客户端配置指南</a>
+        <a href="/airports" class="cta-btn cta-secondary text-xs">浏览 42 家机场测评库</a>
+      </div>
+    </section>
+  </article>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--primary);
+  }
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .page-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .indicator-dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 9999px;
+    background: var(--primary);
+    display: inline-block;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  .cta-secondary {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    border: 1px solid var(--border);
+  }
+</style>

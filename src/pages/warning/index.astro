@@ -1,0 +1,238 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { blacklistAirports, sixWarningSignals, rightsRecoverySop } from "../../data/topics/warningData";
+import { airports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const guangsu = airports.find((a) => a.slug === "guangsu") || airports[0];
+
+const warningSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "机场跑路预警与避坑黑名单库 (2026最新防割指南)",
+  description: "全网持续更新的翻墙机场跑路黑名单实录。解密六大跑路前兆特征、维权止损申诉SOP，并提供正规持牌不跑路专线服务商推荐。",
+  author: {
+    "@type": "Organization",
+    name: "机场life NOC测评实验室",
+  },
+  datePublished: "2026-02-01",
+  dateModified: "2026-11-09",
+  publisher: {
+    "@type": "Organization",
+    name: "机场life",
+  },
+};
+---
+
+<MarketingLayout
+  title="机场跑路预警与避坑黑名单库 (2026最新实录) | 机场life"
+  description="2026年最新翻墙机场跑路黑名单实录：系统梳理近年失联倒闭机场案例，深度剖析6大跑路前兆信号（超长折扣、TG禁言、断流不修），提供支付宝/信用卡拒付维权SOP。"
+  locale={locale}
+  path="/warning"
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(warningSchema)} />
+
+  <article class="container py-12 max-w-5xl mx-auto">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">首页</a></li>
+        <li><span>/</span></li>
+        <li class="text-foreground font-medium" aria-current="page">跑路预警与黑名单库</li>
+      </ol>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="page-head text-center max-w-4xl mx-auto mb-14">
+      <div class="inline-badge mb-3">行业避坑 · 防割血泪实录</div>
+      <h1 class="page-title mb-4">机场跑路预警与避坑黑名单实录</h1>
+      <p class="page-lead">
+        翻墙行业信息极不对称，无数新手贪便宜买年付被圈款割韭菜。我们建立这套全网跑路黑名单与前兆预警系统，帮您提前识别风险，守住血汗钱。
+      </p>
+    </header>
+
+    <!-- Sub-category Quick Links -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-14">
+      <a href="/warning/blacklist" class="p-5 rounded-xl border border-border bg-card hover:border-primary transition-all">
+        <span class="text-xs font-bold text-destructive mb-1 block">历史实录</span>
+        <h3 class="font-bold text-base mb-1">跑路失联黑名单全景库</h3>
+        <p class="text-xs text-muted-foreground">持续收录 2024-2026 年暴雷跑路机场名单、受害人数与作案手法复盘。</p>
+      </a>
+
+      <a href="/warning/signals" class="p-5 rounded-xl border border-border bg-card hover:border-primary transition-all">
+        <span class="text-xs font-bold text-muted-foreground mb-1 block">预警识别</span>
+        <h3 class="font-bold text-base mb-1">识别 6 大典型跑路前兆</h3>
+        <p class="text-xs text-muted-foreground">反常折扣、TG全员禁言、频繁更换个人收款码与连续断流排查。</p>
+      </a>
+
+      <a href="/warning/rights" class="p-5 rounded-xl border border-border bg-card hover:border-primary transition-all">
+        <span class="text-xs font-bold text-primary mb-1 block">维权止损</span>
+        <h3 class="font-bold text-base mb-1">遭遇跑路申诉退款 SOP</h3>
+        <p class="text-xs text-muted-foreground">支付宝投诉商家、信用卡 Chargeback 拒付调单与心理止损手册。</p>
+      </a>
+    </div>
+
+    <!-- Chapter 1: Six Warning Signals -->
+    <section class="prose-section mb-16">
+      <h2 class="section-title">一、跑路倒计时：机场跑路前的 6 大高危特征识别</h2>
+      <p class="section-text">
+        根据我们对近年数十家跑路倒闭机场的尸检追踪，绝大多数跑路并非突发事件，而是在关站前 1 到 4 周就会出现极其明显的异常信号：
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+        {sixWarningSignals.map((sig) => (
+          <div class="p-5 rounded-xl border border-border bg-card">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-destructive text-destructive-foreground">
+                {sig.level}
+              </span>
+              <h3 class="font-bold text-sm text-foreground">{sig.signalName}</h3>
+            </div>
+            <p class="text-xs text-muted-foreground mb-3 leading-relaxed">
+              <strong>典型表象：</strong>{sig.phenomenon}
+            </p>
+            <div class="p-3 rounded-lg bg-muted text-xs space-y-1">
+              <div><strong class="text-foreground">深层内幕：</strong> {sig.rootCause}</div>
+              <div class="text-primary"><strong class="text-foreground">应对策略：</strong> {sig.actionGuidance}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Chapter 2: Blacklist Showcase -->
+    <section class="prose-section mb-16">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="section-title mb-1">二、2024-2026 年暴雷跑路机场黑名单典型档案</h2>
+          <p class="text-xs text-muted-foreground">前事不忘后事之师，点击专栏可查阅更多受害者爆料实录</p>
+        </div>
+        <a href="/warning/blacklist" class="text-xs text-primary font-bold hover:underline">
+          查看完整黑名单库 →
+        </a>
+      </div>
+
+      <div class="space-y-4">
+        {blacklistAirports.map((rec) => (
+          <div class="p-5 rounded-xl border border-destructive/20 bg-card">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-destructive/10 text-destructive">
+                  {rec.scamType}
+                </span>
+                <h3 class="font-bold text-sm text-foreground">{rec.name}</h3>
+              </div>
+              <span class="text-xs text-muted-foreground">跑路时间：{rec.runDate}</span>
+            </div>
+            <p class="text-xs text-muted-foreground mb-3 leading-relaxed">
+              <strong>尸检复盘：</strong>{rec.postMortem}
+            </p>
+            <div class="text-[11px] text-muted-foreground flex flex-wrap gap-4 pt-1 border-t border-border">
+              <span>运营寿命：{rec.establishedSpan}</span>
+              <span>受害规模：{rec.estimatedVictims}</span>
+              <span>卷款估值：{rec.lossScale}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Chapter 3: Rights Recovery SOP -->
+    <section class="prose-section mb-16">
+      <h2 class="section-title">三、{rightsRecoverySop.title}</h2>
+      <div class="space-y-4 my-6">
+        {rightsRecoverySop.steps.map((st) => (
+          <div class="p-5 rounded-xl border border-border bg-card flex items-start gap-4">
+            <span class="w-7 h-7 rounded-full bg-primary text-primary-foreground font-black flex items-center justify-center text-xs shrink-0 mt-0.5">
+              0{st.step}
+            </span>
+            <div>
+              <h3 class="font-bold text-sm text-foreground mb-1">{st.title}</h3>
+              <p class="text-xs text-muted-foreground leading-relaxed">{st.detail}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Safe Harbor Conversion: Guangsu Cloud -->
+    <section class="p-8 rounded-2xl border border-primary/40 bg-card text-center">
+      <div class="inline-badge mb-3">放心出海 · 远离跑路风险</div>
+      <h2 class="text-2xl font-black text-foreground mb-3">
+        选择运营 3 年以上、拥有合规企业专线资质的标杆品牌
+      </h2>
+      <p class="text-sm text-muted-foreground max-w-2xl mx-auto mb-6 leading-relaxed">
+        光速云拥有自建深港以太网企业专线网络，长期服务万级付费用户。99元/年轻量版仅合 8.25 元/月，更有 147 元永久不过期套餐，杜绝任何圈钱跑路可能。
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a
+          href={guangsu.affLink}
+          target="_blank"
+          rel="nofollow sponsored noopener"
+          class="cta-btn cta-primary px-8 py-3 text-sm font-bold shadow-md"
+        >
+          前往光速云官网 (享受安全保底)
+        </a>
+        <a href="/airports/guangsu" class="cta-btn cta-secondary px-8 py-3 text-sm font-bold">
+          查看光速云安全与资质评测
+        </a>
+      </div>
+    </section>
+  </article>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--primary);
+  }
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .page-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .section-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--foreground);
+    margin-bottom: 0.5rem;
+  }
+  .section-text {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--muted-foreground);
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  .cta-secondary {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    border: 1px solid var(--border);
+  }
+</style>

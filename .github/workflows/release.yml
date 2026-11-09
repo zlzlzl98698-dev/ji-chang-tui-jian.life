@@ -46,7 +46,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=astro-cloudflare --branch=main
+          command: pages deploy dist --project-name=ji-chang-tui-jian --branch=main
 
   create-release:
     name: Create GitHub Release

@@ -32,6 +32,8 @@ export interface SiteConfig {
   verification: {
     google: string;
     bing: string;
+    shenma: string;
+    baidu: string;
   };
 
   /* Open Graph and social image */
@@ -79,7 +81,7 @@ export interface SiteConfig {
     favicon: string;
   };
 
-  /* i18n configuration */
+  /* i18n configuration (matches i18n.config.ts) */
   i18n: {
     enabled: boolean;
     locales: string[];
@@ -91,38 +93,40 @@ export interface SiteConfig {
 export const siteConfig: SiteConfig = {
   /* Core configuration — single source of truth for canonical/OG/sitemap/llms.txt.
    * Replace with your production domain when forking this template. */
-  url: "https://astro-cloudflare-starter.pages.dev",
-  name: "Astro Cloudflare",
+  url: process.env.SITE_URL?.trim() || "https://ji-chang-tui-jian.life",
+  name: "机场life",
   description:
-    "Marketing, blog, and docs starter built with Astro and Cloudflare Pages — multilanguage-ready",
-  author: "Milzam",
-  email: "milzamsz@gmail.com",
+    "专注优质稳定网络加速与节点订阅测评指南，为出海业务、跨境电商与开发者提供多协议加速线路测速、流媒体解锁与配置教程。",
+  author: "机场推荐评测团队",
+  email: "contact@ji-chang-tui-jian.life",
   authorImage: "/images/author.jpg",
 
   /* Social links */
   socialLinks: [
     {
-      platform: "github",
-      url: "https://github.com/milzamsz/astro-cloudflare-starter",
-      label: "GitHub",
+      platform: "site",
+      url: "/about",
+      label: "Contact",
     },
     {
-      platform: "linkedin",
-      url: "https://www.linkedin.com/in/milzamsz/",
-      label: "LinkedIn",
+      platform: "site",
+      url: "/about",
+      label: "About",
     },
-    { platform: "email", url: "mailto:milzamsz@gmail.com", label: "Email" },
+    { platform: "email", url: "mailto:contact@ji-chang-tui-jian.life", label: "Email" },
   ],
 
   /* Header settings */
   header: {
-    showSocialLinks: true,
+    showSocialLinks: false,
   },
 
   /* Search engine verification */
   verification: {
-    google: "",
-    bing: "",
+    google: process.env.GOOGLE_SITE_VERIFICATION || "",
+    bing: process.env.BING_SITE_VERIFICATION || "",
+    shenma: process.env.SHENMA_SITE_VERIFICATION || "",
+    baidu: process.env.BAIDU_SITE_VERIFICATION || "",
   },
 
   /* Social image */

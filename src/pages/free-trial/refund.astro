@@ -1,0 +1,239 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { trialAirportsList } from "../../data/topics/freeTrialData";
+import { airports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const guangsu = airports.find((a) => a.slug === "guangsu") || airports[0];
+const refundAirports = trialAirportsList.filter((a) => a.trialType.includes("退款"));
+---
+
+<MarketingLayout
+  title="支持无理由退款保障机场盘点与争议维权全景指南 (2026合规老牌精选) | 机场life"
+  description="2026年支持24小时至7天无理由全额退款承诺的优质机场盘点。深入拆解机场退款条款避坑要点、资金储备金机制、工单极速退款SOP与跨境支付争议维权指南。"
+  locale={locale}
+  path="/free-trial/refund"
+>
+  <article class="container py-12 max-w-5xl mx-auto">
+    <nav class="breadcrumb mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">首页</a></li>
+        <li><span>/</span></li>
+        <li><a href="/free-trial" class="hover:text-primary transition-colors">免费试用</a></li>
+        <li><span>/</span></li>
+        <li class="text-foreground font-medium" aria-current="page">退款保障清单</li>
+      </ol>
+    </nav>
+
+    <header class="page-head max-w-4xl mb-12">
+      <div class="inline-badge mb-3">售后合规 · 敢承诺退款</div>
+      <h1 class="page-title mb-4">支持无理由退款保障机场盘点与争议维权指南</h1>
+      <p class="page-lead">
+        在鱼龙混杂的翻墙市场中，敢于在服务条款（TOS）中明文写明无理由退款承诺的服务商，不仅代表着对自身专线带宽质量的绝对自信，更意味着健全的财务储备与长线运营决心。
+      </p>
+    </header>
+
+    <!-- Answer-First Box -->
+    <div class="p-6 rounded-2xl border border-border bg-card mb-12 space-y-4">
+      <h2 class="text-lg font-bold text-foreground flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span>
+        核心退款法则速览 (Answer-First)
+      </h2>
+      <ul class="text-xs text-muted-foreground space-y-2 leading-relaxed">
+        <li>&bull; <strong>退款是鉴别黑产的试金石：</strong>跑路机场与低成本超售机房普遍采用“售出概不退换”或“充值不可逆”霸王条款。敢提供 <strong>24 小时至 7 天无理由退款</strong> 的品牌，拥有成熟的企业级财务滚动资金池（Rolling Reserve）。</li>
+        <li>&bull; <strong>黄金申请时限：</strong>所有退款机制均要求在购买后 <strong>24 小时内（或使用流量不超过 2GB~5GB）</strong> 提交工单。一旦超出时限或滥刷大流量，将被判定为恶意消费。</li>
+        <li>&bull; <strong>退款行业标杆：</strong>以 <strong>光速云</strong> 为例，提供首日 24 小时无理由全额退款通道，工单秒级审核，原路原额返还，极大降低了新用户的首购决策成本。</li>
+      </ul>
+    </div>
+
+    <!-- Section 1 -->
+    <section class="prose-section mb-14 space-y-4">
+      <h2 class="section-title">01. 为什么“退款承诺”是防范机场跑路的第一指标？</h2>
+      <p class="text-sm text-muted-foreground leading-relaxed">
+        在机场行业历年跑路案例数据库中，超过 98% 的卷款跑路服务商在跑路前夕都有一个共同特征：<strong>关闭一切退款通道，并开启大额年付/两年付 5 折骨折甩卖</strong>。
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
+        <div class="p-5 rounded-xl border border-border bg-card">
+          <h3 class="font-bold text-sm text-foreground mb-2">1. 支付网关合规抵押</h3>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            正规跨境支付通道（Stripe、合规海外聚合支付）会强制要求商户缴纳 10%~20% 的交易保证金作为风险预留金。支持退款证明商户拥有健康的支付通道信用分。
+          </p>
+        </div>
+        <div class="p-5 rounded-xl border border-border bg-card">
+          <h3 class="font-bold text-sm text-foreground mb-2">2. 专线带宽充裕度自信</h3>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            劣质超售中转机场一旦开放退款，晚高峰断流的用户会发生群体性退款挤兑，造成现金流瞬间断裂。只有真正具备冗余 IEPL 物理专线储备的头部品牌才敢开放退款。
+          </p>
+        </div>
+        <div class="p-5 rounded-xl border border-border bg-card">
+          <h3 class="font-bold text-sm text-foreground mb-2">3. 过滤白嫖恶意账号</h3>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            通过先付费后按需退款的机制，既让真正有需求的用户以零风险体验到顶级专线的真实全速，又天然筑起一道防火墙挡住自动化批量抓取脚本。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Verified Refund Airports Table -->
+    <section class="prose-section mb-14 space-y-4">
+      <h2 class="section-title">02. 2026 精选支持明确退款政策的服务商明细</h2>
+      <div class="overflow-x-auto my-6 border border-border rounded-xl">
+        <table class="w-full text-left text-xs text-muted-foreground border-collapse">
+          <thead>
+            <tr class="bg-muted text-foreground border-b border-border">
+              <th class="p-3 font-semibold">服务商品牌</th>
+              <th class="p-3 font-semibold">退款保障承诺</th>
+              <th class="p-3 font-semibold">退款限制条件</th>
+              <th class="p-3 font-semibold">线路规格</th>
+              <th class="p-3 font-semibold">退款途径与到账时效</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border">
+            {refundAirports.map((item) => (
+              <tr>
+                <td class="p-3 font-bold text-foreground">{item.name}</td>
+                <td class="p-3">
+                  <span class="px-2 py-0.5 rounded text-[11px] bg-primary/10 text-primary font-bold">
+                    {item.trialType}
+                  </span>
+                </td>
+                <td class="p-3">{item.claimCondition}</td>
+                <td class="p-3">{item.lineQuality}</td>
+                <td class="p-3">后台提交工单 / 1~24小时原路返还</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section 3: Standard Refund SOP -->
+    <section class="prose-section mb-14 space-y-4">
+      <h2 class="section-title">03. 标准工单退款申请 SOP 模板与沟通要点</h2>
+      <p class="text-sm text-muted-foreground leading-relaxed">
+        若在首日体验过程中因本地运营商互联不佳等客观原因需要退款，切忌在公开 Telegram 吹水群无意义拉扯或人身攻击。按照正规客服支持链路，能够以最高效率办结退款：
+      </p>
+
+      <div class="p-5 rounded-xl border border-border bg-card space-y-4 my-6">
+        <h3 class="text-sm font-bold text-foreground">推荐工单沟通标准模板：</h3>
+        <div class="p-4 rounded-lg bg-muted text-xs font-mono text-foreground leading-relaxed">
+          主题：【退款申请】用户ID：XXXXX 申请首日24小时无理由退款<br /><br />
+          尊敬的客服团队：<br />
+          本人于 [购买日期与具体时间] 购买了贵站的 [套餐名称]，订单编号为 [XXXXXX]。<br />
+          经晚高峰测试，本地宽带（例如：北京联通 1000M）连接香港专线节点存在偶发延迟偏高与丢包，不符合个人当前网络环境使用预期。<br />
+          当前套餐已用流量仅为 [如：1.2GB]，在购买后 24 小时退款保障期内。<br />
+          特依据服务条款（TOS）申请退款，请协助处理原路返还至支付账户。感谢支持！
+        </div>
+      </div>
+      <p class="text-xs text-muted-foreground">
+        💡 <strong>专家沟通技巧：</strong>提供具体的网络环境背景与订单编号，语气客观专业，工单往往在数分钟内直接点击通过，无需冗长核实。
+      </p>
+    </section>
+
+    <!-- Section 4: Refund Traps to Avoid -->
+    <section class="prose-section mb-14 space-y-4">
+      <h2 class="section-title">04. 机场常见的“假退款”免责陷阱避坑指南</h2>
+      <p class="text-sm text-muted-foreground leading-relaxed">
+        部分劣质黑心机场打着“支持退款”的招牌引流，但在实际操作中设置重重霸王条款：
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+        <div class="p-5 rounded-xl border border-destructive/30 bg-destructive/5 space-y-2">
+          <h3 class="text-sm font-bold text-destructive">陷阱一：只退余额，不退原支付渠道</h3>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            用户申请退款后，款项被退回到网站的“账户不可提现余额”中，依然无法兑现现金，只能被动继续购买该站其他同样糟糕的产品。
+          </p>
+        </div>
+        <div class="p-5 rounded-xl border border-destructive/30 bg-destructive/5 space-y-2">
+          <h3 class="text-sm font-bold text-destructive">陷阱二：苛刻扣除 30%~50%“初装手续费”</h3>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            声称退款，但规定必须扣除高额开户费或折旧费，实到手仅剩一小半。正规机场仅扣减按量使用的微量流量成本或免手续费。
+          </p>
+        </div>
+        <div class="p-5 rounded-xl border border-destructive/30 bg-destructive/5 space-y-2">
+          <h3 class="text-sm font-bold text-destructive">陷阱三：以“敏感时期不可抗力”为由单方面赖账</h3>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            在特定敏感时期节点全线飘红时，将网络故障推脱给不可抗力，宣布临时关闭退款通道，实则可能已经启动跑路准备。
+          </p>
+        </div>
+        <div class="p-5 rounded-xl border border-destructive/30 bg-destructive/5 space-y-2">
+          <h3 class="text-sm font-bold text-destructive">陷阱四：USDT 虚拟币收款无法追偿</h3>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            强制只接受波场 TRC20 USDT 转账，一旦商家拒绝退款，区块链不可逆的去中心化特性导致用户没有任何行政或金融追索途径。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Spotlight Banner -->
+    <section class="mb-14">
+      <div class="p-8 rounded-2xl border border-primary/40 bg-card space-y-6">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <span class="px-2.5 py-1 rounded text-xs font-bold bg-primary/10 text-primary uppercase tracking-wide">售后标杆典范</span>
+            <h3 class="text-xl font-bold text-foreground mt-2">光速云 24 小时极速退款安心保障</h3>
+          </div>
+          <a
+            href={guangsu.affLink}
+            target="_blank"
+            rel="nofollow sponsored noopener"
+            class="cta-btn cta-primary whitespace-nowrap"
+          >
+            直达光速云 (享专属优惠)
+          </a>
+        </div>
+        <p class="text-xs text-muted-foreground leading-relaxed">
+          作为华南老牌深港 IEPL 专线运营商，光速云实行透明规范的服务条款：99元/年轻量版套餐同样享有首日 24 小时内无条件退款保障。无论是因为本地宽带适配问题还是使用习惯不符，客服工单极速办结原路返还，真正让您的每一次投入都有据可依。
+        </p>
+      </div>
+    </section>
+  </article>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--primary);
+  }
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .page-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--foreground);
+    margin-bottom: 0.75rem;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1.25rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: opacity 0.15s ease-in-out;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  .cta-primary:hover {
+    opacity: 0.9;
+  }
+</style>

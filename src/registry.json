@@ -1,5 +1,5 @@
 {
-  "name": "astro-cloudflare",
+  "name": "ji-chang-tui-jian",
   "description": "Machine-readable catalog of the three-tier architecture: Components -> Sections -> Pages.",
   "tiers": ["component", "section", "page"],
   "importAliases": {

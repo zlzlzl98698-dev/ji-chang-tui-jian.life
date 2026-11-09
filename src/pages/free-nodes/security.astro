@@ -1,0 +1,113 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { publicSecurityRisks } from "../../data/topics/freeNodes";
+import { airports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const guangsu = airports.find((a) => a.slug === "guangsu") || airports[0];
+---
+
+<MarketingLayout
+  title="公网免费节点安全黑幕与中间人攻击深度剖析 (2026合规审计) | 机场life"
+  description="深度技术揭秘公网免费翻墙节点的安全风险：SSL证书剥离劫持、中间人明文嗅探、反爬蜜罐画像收集与IP连带封禁黑幕。为什么翻墙永远不要碰免费公网节点。"
+  locale={locale}
+  path="/free-nodes/security"
+>
+  <article class="container py-12 max-w-5xl mx-auto">
+    <nav class="breadcrumb mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">首页</a></li>
+        <li><span>/</span></li>
+        <li><a href="/free-nodes" class="hover:text-primary transition-colors">免费节点专题</a></li>
+        <li><span>/</span></li>
+        <li class="text-foreground font-medium" aria-current="page">安全风险黑幕</li>
+      </ol>
+    </nav>
+
+    <header class="page-head max-w-4xl mb-12">
+      <div class="inline-badge mb-3">安全审计 · 深度长文</div>
+      <h1 class="page-title mb-4">公网免费节点安全黑幕：中间人嗅探与蜜罐分析</h1>
+      <p class="page-lead">
+        『免费的往往是最昂贵的』。在网络安全世界里，当你没有为服务付费时，你本身就是被打包售卖的商品。本篇以 NOC 实验室抓包审计证据为依据，硬核拆解公网免费节点的黑客利用链。
+      </p>
+    </header>
+
+    <div class="space-y-8 mb-16">
+      {publicSecurityRisks.map((risk, index) => (
+        <section class="p-6 rounded-2xl border border-border bg-card">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="w-7 h-7 rounded-full bg-destructive text-destructive-foreground font-black flex items-center justify-center text-xs">
+              0{index + 1}
+            </span>
+            <h2 class="text-lg font-bold text-foreground">{risk.title}</h2>
+          </div>
+          <p class="text-sm text-muted-foreground leading-relaxed mb-4">{risk.description}</p>
+          
+          <div class="space-y-2 text-xs">
+            <div class="p-3 rounded-lg bg-muted text-muted-foreground">
+              <strong class="text-foreground">底层网络协议层攻击利用机制：</strong>
+              <p class="mt-1">{risk.technicalMechanism}</p>
+            </div>
+            <div class="p-3 rounded-lg bg-primary/10 text-primary">
+              <strong>专业防御与规避策略：</strong>
+              <p class="mt-1">{risk.mitigation}</p>
+            </div>
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <!-- Guangsu CTA -->
+    <div class="p-8 rounded-2xl border border-primary/40 bg-card text-center">
+      <h3 class="text-xl font-black text-foreground mb-2">保护个人数字资产安全，从升级物理专线开始</h3>
+      <p class="text-xs text-muted-foreground max-w-xl mx-auto mb-6">
+        光速云拥有独立深港物理专线接入，端到端高强度密钥隔离，零公网审查嗅探风险，年付仅需 99 元（8.25 元/月）。
+      </p>
+      <a
+        href={guangsu.affLink}
+        target="_blank"
+        rel="nofollow sponsored noopener"
+        class="cta-btn cta-primary px-8 py-3 text-sm font-bold"
+      >
+        直达光速云官网 (领安全企业专线)
+      </a>
+    </div>
+  </article>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--primary);
+  }
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .page-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+</style>

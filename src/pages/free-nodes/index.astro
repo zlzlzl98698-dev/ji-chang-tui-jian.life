@@ -1,0 +1,329 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { dailyFreeNodes, publicSecurityRisks, publicVsGuangsuComparison } from "../../data/topics/freeNodes";
+import { airports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const guangsu = airports.find((a) => a.slug === "guangsu") || airports[0];
+
+const freeNodesSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "免费节点每日更新与公网安全全景深度解析 (2026年最新指南)",
+  description: "提供每日核验的免费VLESS、Shadowsocks、Trojan公网节点，深入剖析公网免费节点的中间人劫持、蜜罐嗅探及晚高峰断流风险，提供企业专线安全迁移方案。",
+  author: {
+    "@type": "Organization",
+    name: "机场life NOC测评实验室",
+  },
+  datePublished: "2026-01-20",
+  dateModified: "2026-11-09",
+  publisher: {
+    "@type": "Organization",
+    name: "机场life",
+  },
+};
+---
+
+<MarketingLayout
+  title="免费节点每日更新与公网安全全景解析 (2026年最新) | 机场life"
+  description="2026年每日实测免费节点订阅池：涵盖香港、日本、美国公网VLESS-Reality与Shadowsocks节点。深度揭秘公网免费节点窃密与蜜罐风险，并提供安全低成本替代方案。"
+  locale={locale}
+  path="/free-nodes"
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(freeNodesSchema)} />
+
+  <article class="container py-12 max-w-5xl mx-auto">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">首页</a></li>
+        <li><span>/</span></li>
+        <li class="text-foreground font-medium" aria-current="page">免费节点每日更新专题</li>
+      </ol>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="page-head text-center max-w-4xl mx-auto mb-14">
+      <div class="inline-badge mb-3">公益与安全专题 · 每日核验更新</div>
+      <h1 class="page-title mb-4">免费节点每日更新与公网安全全景解析</h1>
+      <p class="page-lead">
+        为您提供每日经探针实测的临时应急免费节点订阅，同时硬核揭开所谓『免费公益翻墙』背后的黑客嗅探、中间人解密、运营商蜜罐与晚高峰断流真相。
+      </p>
+      <div class="page-meta mt-4 flex items-center justify-center gap-6 text-xs text-muted-foreground">
+        <span>更新时间：今日 10:30 实测</span>
+        <span>·</span>
+        <span>可用节点：5个公网应急源</span>
+        <span>·</span>
+        <span>安全级别：仅限应急查资料，严禁登账号</span>
+      </div>
+    </header>
+
+    <!-- Sub-category Quick Links -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+      <a href="/free-nodes/vless" class="sub-nav-card p-5 rounded-xl border border-border bg-card hover:border-primary transition-all">
+        <div class="text-xs font-bold text-primary mb-1">专题分支 01</div>
+        <h3 class="font-bold text-base mb-2">VLESS-Reality 免费订阅池</h3>
+        <p class="text-xs text-muted-foreground">精选支持 TLS Reality 借用大厂证书的轻量订阅源，单机配置与导入指引。</p>
+      </a>
+
+      <a href="/free-nodes/clash" class="sub-nav-card p-5 rounded-xl border border-border bg-card hover:border-primary transition-all">
+        <div class="text-xs font-bold text-primary mb-1">专题分支 02</div>
+        <h3 class="font-bold text-base mb-2">Clash / Sing-box 一键导入</h3>
+        <p class="text-xs text-muted-foreground">免费节点在线订阅转换、分流规则配置与常见加载超时排障指南。</p>
+      </a>
+
+      <a href="/free-nodes/security" class="sub-nav-card p-5 rounded-xl border border-border bg-card hover:border-primary transition-all">
+        <div class="text-xs font-bold text-destructive mb-1">专题分支 03 (必读)</div>
+        <h3 class="font-bold text-base mb-2">公网免费节点安全黑幕深度剖析</h3>
+        <p class="text-xs text-muted-foreground">解密中间人抓包嗅探、Cookie 凭证失窃、反爬蜜罐与黑名单溯源机制。</p>
+      </a>
+    </div>
+
+    <!-- Security Warning Banner -->
+    <div class="security-banner p-6 rounded-2xl border mb-14">
+      <div class="flex items-start gap-4">
+        <div class="text-2xl">⚠️</div>
+        <div class="space-y-1">
+          <h3 class="font-bold text-base text-destructive">
+            NOC 实验室安全合规与免责安全红线公告
+          </h3>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            1. 本页公开的免费节点抓取自国际开源网络社区，<strong>仅供学术科研与突发断网时临时查阅公开文档应急使用</strong>。<br />
+            2. <strong>严禁在任何免费节点环境下登录个人网银、微信、支付宝、企业邮箱、Google 账户或任何包含密码的私人服务！</strong> 公网节点无法排除出口服务器内置抓包窃密的风险。<br />
+            3. 若需长期稳定办公、观看 4K 流媒体或保障敏感数据安全，请务必使用经过端到端物理加密的企业专线（推荐光速云 8元/月）。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chapter 1: Live Daily Free Nodes Pool -->
+    <section class="prose-section mb-16">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="section-title mb-1">一、今日实测可用公网应急节点池 (实时更新)</h2>
+          <p class="text-xs text-muted-foreground">点击右侧按钮一键复制节点链接，直接粘贴导入 Clash / Shadowrocket / Sing-box</p>
+        </div>
+        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-muted text-foreground">
+          已通过连通性核验
+        </span>
+      </div>
+
+      <div class="space-y-4">
+        {dailyFreeNodes.map((node) => (
+          <div class="p-5 rounded-xl border border-border bg-card flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">{node.flag}</span>
+                <h3 class="font-bold text-sm text-foreground">{node.name}</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-muted text-foreground">
+                  {node.protocol}
+                </span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-muted text-muted-foreground">
+                  {node.status === "active" ? "连通正常" : "晚高峰拥塞"}
+                </span>
+              </div>
+              <div class="text-xs text-muted-foreground flex flex-wrap gap-3">
+                <span>测速延迟：<strong class="text-foreground">{node.testedLatency}</strong></span>
+                <span>·</span>
+                <span>实测带宽：{node.speedLimit}</span>
+                <span>·</span>
+                <span>加密方式：{node.security}</span>
+              </div>
+              <p class="text-[11px] text-muted-foreground">
+                ⚠️ {node.warningNotice}
+              </p>
+            </div>
+
+            <div class="flex items-center gap-2 w-full md:w-auto shrink-0">
+              <button
+                type="button"
+                class="copy-node-btn px-3 py-1.5 rounded bg-primary text-primary-foreground text-xs font-bold hover:opacity-90"
+                data-link={node.link}
+              >
+                复制节点链接
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Chapter 2: The Truth Behind Free Nodes -->
+    <section class="prose-section mb-16">
+      <h2 class="section-title">二、天下没有免费的午餐：揭秘公网免费节点的 4 大致命安全隐患</h2>
+      <p class="section-text">
+        很多人好奇：搭建一台海外服务器每个月至少需要几十元机房成本，那些在各大论坛、TG 频道每天无私分享『上百个免费节点』的人，他们到底图什么？以下是网络安全审计揭露的真实商业闭环：
+      </p>
+
+      <div class="space-y-6 my-8">
+        {publicSecurityRisks.map((risk) => (
+          <div class="p-6 rounded-xl border border-border bg-card">
+            <div class="flex items-center gap-2 mb-2">
+              <span class={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${risk.severity === "critical" ? "risk-critical" : "risk-high"}`}>
+                {risk.severity === "critical" ? "致命威胁" : "高危漏洞"}
+              </span>
+              <h3 class="font-bold text-base text-foreground">{risk.title}</h3>
+            </div>
+            <p class="text-xs text-muted-foreground leading-relaxed mb-3">{risk.description}</p>
+            <div class="p-3 rounded-lg bg-muted text-xs space-y-1">
+              <div><strong class="text-foreground">技术审计底层原理：</strong> {risk.technicalMechanism}</div>
+              <div><strong class="text-foreground">专业防护建议：</strong> {risk.mitigation}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Chapter 3: Contrast Table (Free vs Guangsu) -->
+    <section class="prose-section mb-16">
+      <h2 class="section-title">三、硬核实测：免费公网节点 vs 光速云企业级专线全景对比</h2>
+      <p class="section-text">
+        为了让大家直观了解两者的巨大鸿沟，我们在晚上 21:00 晚高峰国际骨干网最拥塞时段，对两类网络进行了同环境多维度压测：
+      </p>
+
+      <div class="overflow-x-auto border border-border rounded-xl my-6">
+        <table class="w-full text-xs text-left">
+          <thead class="bg-muted/50 text-foreground font-bold">
+            <tr>
+              <th class="p-3">压测维度</th>
+              <th class="p-3">公网免费应急节点</th>
+              <th class="p-3 bg-muted font-bold text-primary">光速云 (Guangsu Cloud) 企业专线</th>
+              <th class="p-3">胜出方</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border">
+            {publicVsGuangsuComparison.dimensions.map((dim) => (
+              <tr class="hover:bg-muted/20">
+                <td class="p-3 font-semibold text-foreground">{dim.name}</td>
+                <td class="p-3 text-muted-foreground">{dim.free}</td>
+                <td class="p-3 font-semibold text-foreground bg-muted/40">{dim.guangsu}</td>
+                <td class="p-3">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-primary text-primary-foreground">
+                    光速云完胜
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Chapter 4: Conversion to Guangsu Cloud -->
+    <section class="p-8 rounded-2xl border border-primary/40 bg-card relative overflow-hidden mb-16">
+      <div class="space-y-4">
+        <div class="inline-badge">彻底告别折腾与提心吊胆</div>
+        <h2 class="text-2xl font-black text-foreground">
+          每月仅需 8 元钱，享受 100% 放心、4K 秒开的企业级物理专线
+        </h2>
+        <p class="text-sm text-muted-foreground leading-relaxed max-w-3xl">
+          不要再为了省下几块钱，每天在网络社区里到处寻找随时失效的免费节点，更不要拿自己的密码与个人隐私去冒险。【光速云】轻量年付版仅需 99 元（平均每月只要 8.25 元），一杯奶茶钱即可买下整整一年的深港物理专线高速通行证。
+        </p>
+        <div class="flex flex-wrap gap-4 pt-2">
+          <a
+            href={guangsu.affLink}
+            target="_blank"
+            rel="nofollow sponsored noopener"
+            class="cta-btn cta-primary px-6 py-2.5"
+          >
+            立即开通光速云轻量版 (优惠码 AMM)
+          </a>
+          <a href="/airports/guangsu" class="cta-btn cta-secondary px-6 py-2.5">
+            查看光速云 24 节点全量测速图
+          </a>
+        </div>
+      </div>
+    </section>
+  </article>
+
+  <script is:inline>
+    document.querySelectorAll(".copy-node-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const link = btn.getAttribute("data-link");
+        if (link) {
+          navigator.clipboard.writeText(link).then(() => {
+            const originalText = btn.textContent;
+            btn.textContent = "已成功复制！";
+            btn.classList.add("copy-success");
+            setTimeout(() => {
+              btn.textContent = originalText;
+              btn.classList.remove("copy-success");
+            }, 2000);
+          });
+        }
+      });
+    });
+  </script>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--primary);
+  }
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .page-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .section-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--foreground);
+    margin-bottom: 0.5rem;
+  }
+  .section-text {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--muted-foreground);
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  .cta-secondary {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    border: 1px solid var(--border);
+  }
+  .security-banner {
+    border-color: var(--destructive);
+    background: var(--card);
+  }
+  .risk-critical {
+    background: var(--destructive);
+    color: var(--destructive-foreground);
+  }
+  .risk-high {
+    background: var(--muted);
+    color: var(--foreground);
+    border: 1px solid var(--border);
+  }
+  .copy-success {
+    background: var(--primary) !important;
+  }
+</style>

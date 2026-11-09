@@ -1,0 +1,215 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { dailyFreeNodes } from "../../data/topics/freeNodes";
+import { airports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const vlessNodes = dailyFreeNodes.filter((n) => n.protocol === "VLESS" || n.protocol === "Shadowsocks");
+const guangsu = airports.find((a) => a.slug === "guangsu") || airports[0];
+---
+
+<MarketingLayout
+  title="VLESS-Reality 免费节点订阅与配置教程 (2026最新) | 机场life"
+  description="2026年每日更新免费VLESS-Reality节点订阅链接。包含Vision流控配置、SNI域名伪装设置以及Windows/Mac/Android/iOS手动导入指引。"
+  locale={locale}
+  path="/free-nodes/vless"
+>
+  <article class="container py-12 max-w-5xl mx-auto">
+    <nav class="breadcrumb mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">首页</a></li>
+        <li><span>/</span></li>
+        <li><a href="/free-nodes" class="hover:text-primary transition-colors">免费节点专题</a></li>
+        <li><span>/</span></li>
+        <li class="text-foreground font-medium" aria-current="page">VLESS-Reality 订阅</li>
+      </ol>
+    </nav>
+
+    <header class="page-head max-w-4xl mb-12">
+      <div class="inline-badge mb-3">协议专项 · VLESS-Reality</div>
+      <h1 class="page-title mb-4">VLESS-Reality 免费订阅池与深度配置排障指南</h1>
+      <p class="page-lead">
+        VLESS-Reality 借用真实大厂合法域名的 TLS 证书伪装，是目前公网直连抗封锁能力最强的开源协议。以下为您提供经测试连通的开源 Reality 节点、配置参数详解以及针对晚高峰断流的深度调优指南。
+      </p>
+    </header>
+
+    <!-- Node List -->
+    <div class="space-y-4 mb-14">
+      {vlessNodes.map((node) => (
+        <div class="p-5 rounded-xl border border-border bg-card flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span>{node.flag}</span>
+              <h3 class="font-bold text-sm text-foreground">{node.name}</h3>
+              <span class="px-2 py-0.5 rounded text-[10px] bg-muted font-bold text-primary">
+                {node.protocol} + Reality
+              </span>
+            </div>
+            <div class="text-xs text-muted-foreground">
+              延迟：{node.testedLatency} · 限速：{node.speedLimit} · 状态：{node.status}
+            </div>
+          </div>
+          <button
+            type="button"
+            class="copy-btn px-3 py-1.5 rounded bg-primary text-primary-foreground text-xs font-bold"
+            data-link={node.link}
+          >
+            一键复制链接
+          </button>
+        </div>
+      ))}
+    </div>
+
+    <!-- Manual Import Guide -->
+    <section class="prose-section mb-14">
+      <h2 class="section-title">一、VLESS-Reality 核心参数手动导入对照表</h2>
+      <p class="text-sm text-muted-foreground mb-4 leading-relaxed">
+        很多新手直接导入公网单节点时容易出现证书校验失败（x509: certificate signed by unknown authority）或流控不匹配问题。配置客户端时请严格参照下表参数映射关系：
+      </p>
+      <div class="overflow-x-auto border border-border rounded-xl my-4">
+        <table class="w-full text-xs text-left">
+          <thead class="bg-muted/50 font-bold text-foreground">
+            <tr>
+              <th class="p-3">参数项</th>
+              <th class="p-3">技术含义与填写规范</th>
+              <th class="p-3">推荐配置值</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border">
+            <tr>
+              <td class="p-3 font-semibold text-foreground">Flow (流控算法)</td>
+              <td class="p-3">XTLS 专用流控，消除 TLS-in-TLS 特征与重复握手</td>
+              <td class="p-3 text-primary font-bold">xtls-rprx-vision</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-semibold text-foreground">SNI / ServerName</td>
+              <td class="p-3">借用大厂合规 TLS 握手证书域名（目标主机需支持 TLS 1.3）</td>
+              <td class="p-3">itunes.apple.com / yahoo.co.jp / dl.google.com</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-semibold text-foreground">Fingerprint (指纹)</td>
+              <td class="p-3">客户端 TLS ClientHello 特征指纹模拟，对抗 GFW 深度机器学习识别</td>
+              <td class="p-3">chrome / safari</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-semibold text-foreground">PublicKey (公钥)</td>
+              <td class="p-3">服务端生成的 x25519 协商公钥，长度固定为 43 字符</td>
+              <td class="p-3">由节点提供方指定的一串 Base64 字符串</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-semibold text-foreground">ShortId (简短ID)</td>
+              <td class="p-3">用于服务端区分多客户端的十六进制标识，可防止主动探测伪装</td>
+              <td class="p-3">8 字节或 16 字节十六进制字符 (如 0123456789abcdef)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Deep Technical Chapter 2 -->
+    <section class="prose-section mb-14">
+      <h2 class="section-title">二、VLESS-Reality 的抗封锁工作机制与中间人探测防线</h2>
+      <div class="space-y-4 text-sm text-muted-foreground leading-relaxed">
+        <p>
+          在传统的 VMess 或旧版 Trojan 协议中，审查系统（GFW）可以通过“重放攻击”或“主动探测（Active Probing）”向你的代理服务器发送特定探针请求。一旦服务器返回了自签名证书、未知商户证书，或者没有正确响应该探测，该 IP 就会在短时间内被封锁端口。
+        </p>
+        <p>
+          VLESS-Reality 彻底重构了这一交互逻辑。它的核心设计理念被称为<strong>借鸡生蛋（Borrowing Identities）</strong>：Reality 服务端直接借用公网上知名大型企业网站（例如 Apple、Microsoft、Yahoo 等）的真实 SSL/TLS 证书。当 GFW 防火墙伪装成普通访客向你的服务器发起 TLS 握手测试时，Reality 代理内核会将请求直接反向代理透明转发给 Apple 或 Microsoft 官方服务器，返回完全合法、受权威机构认证的大厂证书。因此，任何外部嗅探设备在技术层面上都无法区分这台机器究竟是一个代理服务器，还是一个合法的境外镜像节点。
+        </p>
+      </div>
+    </section>
+
+    <!-- Deep Technical Chapter 3 -->
+    <section class="prose-section mb-14">
+      <h2 class="section-title">三、为什么公网免费 Reality 节点在晚高峰依然会卡顿断流？</h2>
+      <div class="space-y-4 text-sm text-muted-foreground leading-relaxed">
+        <p>
+          不少用户存在技术误区，认为“只要协议用上了 Reality，网速就会飞快”。事实并非如此：<strong>协议解决的是“连通性与抗封锁”问题，而决定网速和丢包率的是底层的“物理链路与带宽质量”</strong>。
+        </p>
+        <p>
+          公网免费节点多数架设在廉价 VPS 上，其传输路径走的是普通公网国际出口（如 China Telecom 163 骨干网）。在每晚 20:00 至 23:30 的上网高峰期，全国国际出口互联带宽极度拥堵，运营商的骨干网路由器会开启 QoS 队列限速。此时无论加密协议如何先进，普通公网数据包的丢包率都会瞬间攀升到 30% 到 50%，导致 TCP 频繁重传，视频加载反复缓冲。
+        </p>
+        <p>
+          要想在晚高峰实现 4K 60FPS 码率秒开且零丢包，唯一的物理级解决方案是使用<strong>企业内网物理专线（如 IEPL / IPLC）</strong>。内网专线直接通过深圳-香港两端机房的物理光缆互联，完全绕过公网国际出口和 GFW 审查，从物理层面上杜绝了丢包与网络抖动。
+        </p>
+      </div>
+    </section>
+
+    <!-- Upgrading Banner -->
+    <div class="p-6 rounded-xl border border-primary/40 bg-card flex flex-col md:flex-row items-center justify-between gap-6">
+      <div>
+        <h4 class="font-bold text-base text-foreground mb-1">想要免去繁琐配置、享受 100% 稳定的企业物理专线？</h4>
+        <p class="text-xs text-muted-foreground">公网 Reality 依然受制于晚高峰骨干网拥塞。光速云企业 IEPL 内网专线每月仅需 8 元，一键全自动导入全平台客户端。</p>
+      </div>
+      <a
+        href={guangsu.affLink}
+        target="_blank"
+        rel="nofollow sponsored noopener"
+        class="cta-btn cta-primary whitespace-nowrap"
+      >
+        升级至光速云 (享专属优惠)
+      </a>
+    </div>
+  </article>
+
+  <script is:inline>
+    document.querySelectorAll(".copy-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const link = btn.getAttribute("data-link");
+        if (link) {
+          navigator.clipboard.writeText(link).then(() => {
+            const old = btn.textContent;
+            btn.textContent = "已复制！";
+            setTimeout(() => (btn.textContent = old), 2000);
+          });
+        }
+      });
+    });
+  </script>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--primary);
+  }
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .page-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .section-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--foreground);
+    margin-bottom: 1rem;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+</style>

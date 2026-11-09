@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
-import SEO from "../components/seo/SEO.astro";
+import SEO, { type SEOArticle } from "../components/seo/SEO.astro";
 import { type Locale } from "../lib/site-config";
 
 export interface Props {
@@ -8,9 +8,22 @@ export interface Props {
   description: string;
   locale: Locale;
   path: string;
+  canonical?: string;
+  robots?: string;
+  article?: SEOArticle;
+  jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
-const { title, description, locale, path } = Astro.props as Props;
+const {
+  title,
+  description,
+  locale,
+  path,
+  canonical,
+  robots,
+  article,
+  jsonLd,
+} = Astro.props as Props;
 ---
 
 <BaseLayout
@@ -26,6 +39,10 @@ const { title, description, locale, path } = Astro.props as Props;
     description={description}
     locale={locale}
     path={path}
+    canonical={canonical}
+    robots={robots}
+    article={article}
+    jsonLd={jsonLd}
     ogImage={path === "/" ? `/og/home/${locale}` : `/og/page/${locale}${path}`}
   />
   <slot />

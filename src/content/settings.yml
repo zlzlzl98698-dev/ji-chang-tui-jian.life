@@ -1,15 +1,15 @@
 # Site Settings
 # Edit this file in Git.
-name: "Astro Cloudflare"
-description: "Marketing, blog, and docs starter — multilanguage-ready."
-url: "https://astro-cloudflare-starter.pages.dev"
+name: "机场life"
+description: "优质稳定网络加速与节点订阅测评指南，提供全方位翻墙机场测速、协议解析、优惠折扣及新手配置教程。"
+url: "https://ji-chang-tui-jian.life"
 defaultLocale: en
 analyticsProvider: none
 gtmId: ""
 umamiUrl: ""
 umamiId: ""
-mapLatitude: "-7.4941954"
-mapLongitude: "110.8065028"
-orgName: ""
-orgEmail: ""
+mapLatitude: ""
+mapLongitude: ""
+orgName: "机场life"
+orgEmail: "contact@ji-chang-tui-jian.life"
 socialLinks: []

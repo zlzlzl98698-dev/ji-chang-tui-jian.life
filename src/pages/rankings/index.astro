@@ -1,0 +1,649 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { getTopAirports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const top10 = getTopAirports(10);
+
+const rankingSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "2026年度优质网络加速机场排行榜 Top 10",
+  description: "基于真实晚高峰测速、专线SLA稳定性、ChatGPT与流媒体解锁能力评测的2026年度十大优质机场综合推荐榜单。",
+  numberOfItems: 10,
+  itemListElement: top10.map((a, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: a.name,
+    url: `https://ji-chang-tui-jian.life/airports/${a.slug}`,
+  })),
+};
+---
+
+<MarketingLayout
+  title="2026优质机场推荐排行榜 Top 10 - 专线节点晚高峰实测横评 | 机场life"
+  description="2026年度权威机场排行榜：基于真实晚高峰测速、丢包率检测与流媒体解锁验证。深度横评光速云、暮光加速、飞猫云等十大优质服务商，附专属优惠券与选购指南。"
+  locale={locale}
+  path="/rankings"
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(rankingSchema)} />
+
+  <section class="container py-12 max-w-5xl mx-auto">
+    <!-- Header -->
+    <header class="page-head text-center max-w-3xl mx-auto mb-12">
+      <div class="inline-badge mb-3">2026 Observatory Annual Benchmark</div>
+      <h1 class="page-title mb-4">2026 年度十大优质机场综合排行榜</h1>
+      <p class="page-lead">
+        依托实验室全天候晚高峰自动探测与丢包监测数据，综合考量线路架构（IEPL/IPLC）、大模型支持、4K/8K流媒体解锁率与售后SLA稳定性，为您呈现最透明客观的选购参考。
+      </p>
+    </header>
+
+    <!-- Top 3 Podium Showcase -->
+    <div class="podium-grid mb-16">
+      <!-- Top 2 -->
+      <div class="podium-card is-rank-2 order-2 sm:order-1">
+        <div class="podium-badge">🥈 年度第 2 名</div>
+        <h3 class="podium-name">{top10[1].name}</h3>
+        <p class="podium-line">{top10[1].lineType}</p>
+        <div class="podium-price">{top10[1].minPrice}</div>
+        <p class="podium-desc">{top10[1].description}</p>
+        <div class="podium-actions">
+          <a
+            href={top10[1].affLink}
+            target="_blank"
+            rel="nofollow sponsored noopener"
+            class="cta-btn cta-primary"
+          >
+            直达官网
+          </a>
+          <a href={`/airports/${top10[1].slug}`} class="cta-btn cta-secondary">
+            查看深度评测
+          </a>
+        </div>
+      </div>
+
+      <!-- Top 1 Winner -->
+      <div class="podium-card is-rank-1 is-champion order-1 sm:order-2">
+        <div class="podium-crown">👑 综合年度总冠军 · 强力推荐</div>
+        <div class="podium-badge champion-badge">🥇 TOP 1</div>
+        <h3 class="podium-name">{top10[0].name}</h3>
+        <p class="podium-line">{top10[0].lineType}</p>
+        <div class="podium-price">{top10[0].minPrice}</div>
+        <div class="coupon-highlight">
+          专属优惠码: <code>{top10[0].coupon}</code>
+        </div>
+        <p class="podium-desc">{top10[0].description}</p>
+        <div class="champion-features">
+          <span>✓ 147永久不限时套餐</span>
+          <span>✓ 年付¥99轻量版(月均¥8)</span>
+          <span>✓ VLESS全节点4K秒开</span>
+        </div>
+        <div class="podium-actions">
+          <a
+            href={top10[0].affLink}
+            target="_blank"
+            rel="nofollow sponsored noopener"
+            class="cta-btn cta-primary champion-cta"
+          >
+            前往光速云官网开通 (享专属折扣)
+          </a>
+          <a href={`/airports/${top10[0].slug}`} class="cta-btn cta-secondary">
+            查看光速云完整测评
+          </a>
+        </div>
+      </div>
+
+      <!-- Top 3 -->
+      <div class="podium-card is-rank-3 order-3 sm:order-3">
+        <div class="podium-badge">🥉 年度第 3 名</div>
+        <h3 class="podium-name">{top10[2].name}</h3>
+        <p class="podium-line">{top10[2].lineType}</p>
+        <div class="podium-price">{top10[2].minPrice}</div>
+        <p class="podium-desc">{top10[2].description}</p>
+        <div class="podium-actions">
+          <a
+            href={top10[2].affLink}
+            target="_blank"
+            rel="nofollow sponsored noopener"
+            class="cta-btn cta-primary"
+          >
+            直达官网
+          </a>
+          <a href={`/airports/${top10[2].slug}`} class="cta-btn cta-secondary">
+            查看深度评测
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Complete Top 10 Comparison Table -->
+    <section class="section-card p-6 md:p-8 rounded-2xl border mb-16">
+      <h2 class="table-title mb-6">📊 2026 年度 Top 10 机场多维横向参数对比表</h2>
+      <div class="table-container">
+        <table class="ranking-table">
+          <thead>
+            <tr>
+              <th>综合排名</th>
+              <th>品牌名称</th>
+              <th>线路架构</th>
+              <th>协议支持</th>
+              <th>起步月均价格</th>
+              <th>流媒体/AI支持</th>
+              <th>专属折扣</th>
+              <th>快速开通</th>
+            </tr>
+          </thead>
+          <tbody>
+            {top10.map((a) => (
+              <tr class={a.rank === 1 ? "is-champion-row" : ""}>
+                <td>
+                  <span class={`rank-pill rank-${a.rank}`}>#{a.rank}</span>
+                </td>
+                <td>
+                  <a href={`/airports/${a.slug}`} class="brand-link">
+                    <strong>{a.name}</strong>
+                  </a>
+                </td>
+                <td><span class="line-badge">{a.lineType}</span></td>
+                <td>
+                  <div class="protocol-tags">
+                    {a.protocols.slice(0, 2).map((p) => (
+                      <span class="p-tag">{p}</span>
+                    ))}
+                  </div>
+                </td>
+                <td class="price-col">{a.minPrice}</td>
+                <td>
+                  <span class="unlock-tag">ChatGPT/Netflix全解</span>
+                </td>
+                <td>
+                  {a.coupon ? <code class="coupon-pill">{a.coupon}</code> : <span class="text-muted-foreground">-</span>}
+                </td>
+                <td>
+                  <a
+                    href={a.affLink}
+                    target="_blank"
+                    rel="nofollow sponsored noopener"
+                    class="action-btn"
+                  >
+                    开通 ↗
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Specific Category Special Awards -->
+    <section class="category-awards mb-16">
+      <h2 class="section-heading mb-8">🏆 2026 场景细分推荐奖项</h2>
+      <div class="awards-grid">
+        <div class="award-card">
+          <div class="award-icon">🛡️</div>
+          <h3 class="award-title">企业级高 SLA 专线之选</h3>
+          <p class="award-desc">要求低延迟抖动、晚高峰0丢包、游戏与高频交易首选。</p>
+          <div class="award-picks">
+            <a href="/airports/guangsu" class="award-tag">光速云 (IEPL双专线)</a>
+            <a href="/airports/muguang" class="award-tag">暮光加速</a>
+            <a href="/airports/dalaoyun" class="award-tag">大佬云</a>
+          </div>
+        </div>
+
+        <div class="award-card">
+          <div class="award-icon">💰</div>
+          <h3 class="award-title">极致性价比预算之王</h3>
+          <p class="award-desc">百元内年付方案，适合学生党、科研论文检索与备用轻量梯队。</p>
+          <div class="award-picks">
+            <a href="/airports/guangsu" class="award-tag">光速云 (¥99/年 折合¥8/月)</a>
+            <a href="/airports/feimao" class="award-tag">飞猫云</a>
+            <a href="/airports/ermao" class="award-tag">二猫云</a>
+          </div>
+        </div>
+
+        <div class="award-card">
+          <div class="award-icon">🎬</div>
+          <h3 class="award-title">AI生产力与4K流媒体之王</h3>
+          <p class="award-desc">原生家庭宽带IP，ChatGPT Plus/Claude 3.5无感防风控。</p>
+          <div class="award-picks">
+            <a href="/airports/guangsu" class="award-tag">光速云</a>
+            <a href="/airports/weifeng" class="award-tag">微风网络</a>
+            <a href="/airports/xingdaomeng" class="award-tag">星岛梦</a>
+          </div>
+        </div>
+
+        <div class="award-card">
+          <div class="award-icon">♾️</div>
+          <h3 class="award-title">绝版不限时 / 永久流量套餐</h3>
+          <p class="award-desc">流量永不清零，告别按月续费焦虑，买一次用几年。</p>
+          <div class="award-picks">
+            <a href="/airports/guangsu" class="award-tag">光速云 (147永久套餐247GB)</a>
+            <a href="/airports/wuyou" class="award-tag">无忧链接</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testing Methodology -->
+    <section class="methodology-card p-8 rounded-2xl border mb-16">
+      <h2 class="methodology-title mb-4">📐 机场life 实验室评测标准与打分维度</h2>
+      <div class="methodology-points">
+        <div class="m-point">
+          <strong>1. 晚高峰压测（权重 35%）：</strong>在晚 20:00 - 23:00 高峰期进行 500MB+ 大文件测速与持续 Ping 监控，测试丢包率与抖动率。
+        </div>
+        <div class="m-point">
+          <strong>2. 线路拓扑与抗封锁（权重 25%）：</strong>重点评估是否采用真实内网传输（IEPL/IPLC），以及对于 VLESS/Reality/Trojan 等新一代防封锁协议的原生支持。
+        </div>
+        <div class="m-point">
+          <strong>3. AI 大模型与流媒体解锁（权重 20%）：</strong>定期对 OpenAI ChatGPT、Claude、Gemini 以及 Netflix、Disney+、YouTube Premium 进行全节点脚本探测。
+        </div>
+        <div class="m-point">
+          <strong>4. 运营年限与工单 SLA（权重 20%）：</strong>拒绝“跑路快闪店”，严格收录具备 2 年以上连续稳定运营历史、工单响应及时的服务商。
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom Action -->
+    <div class="text-center pt-4">
+      <p class="text-muted-foreground mb-4">想要了解全部 42 家机场的更细化测速与数据吗？</p>
+      <a href="/airports" class="cta-btn cta-secondary is-lg">
+        浏览全量 42 家机场实测库 →
+      </a>
+    </div>
+  </section>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+  }
+
+  .page-title {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+    line-height: 1.2;
+  }
+
+  .page-lead {
+    font-size: 1.0625rem;
+    color: var(--muted-foreground);
+    line-height: 1.6;
+  }
+
+  /* Podium */
+  .podium-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  @media (min-width: 768px) {
+    .podium-grid {
+      grid-template-columns: repeat(3, 1fr);
+      align-items: end;
+    }
+  }
+
+  .podium-card {
+    border-radius: 1.25rem;
+    border: 1px solid var(--border);
+    background: var(--card);
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  .podium-card.is-champion {
+    border: 2px solid var(--primary);
+    transform: translateY(-0.5rem);
+    background: var(--card);
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+  }
+
+  .podium-crown {
+    position: absolute;
+    top: -1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: var(--primary-foreground);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .podium-badge {
+    font-size: 0.875rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--muted-foreground);
+  }
+
+  .champion-badge {
+    font-size: 1.125rem;
+    color: var(--primary);
+    font-weight: 800;
+  }
+
+  .podium-name {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--foreground);
+    margin-bottom: 0.25rem;
+  }
+
+  .podium-line {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+    margin-bottom: 0.75rem;
+  }
+
+  .podium-price {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--foreground);
+    margin-bottom: 0.75rem;
+  }
+
+  .coupon-highlight {
+    font-size: 0.8125rem;
+    margin-bottom: 0.75rem;
+    color: var(--foreground);
+  }
+
+  .coupon-highlight code {
+    background: var(--secondary);
+    padding: 0.15rem 0.35rem;
+    border-radius: 0.25rem;
+    font-weight: 700;
+  }
+
+  .podium-desc {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+    flex-grow: 1;
+  }
+
+  .champion-features {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.8125rem;
+    color: var(--foreground);
+    margin-bottom: 1.5rem;
+    text-align: left;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background: var(--secondary);
+  }
+
+  .podium-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1rem;
+    border-radius: 0.65rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  .champion-cta {
+    font-weight: 700;
+    padding: 0.85rem 1.25rem;
+  }
+
+  .cta-secondary {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+  }
+
+  .cta-btn:hover {
+    opacity: 0.9;
+  }
+
+  .is-lg {
+    padding: 0.85rem 2rem;
+    font-size: 1rem;
+  }
+
+  /* Table */
+  .section-card {
+    background: var(--card);
+    border-color: var(--border);
+  }
+
+  .table-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--foreground);
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    text-align: left;
+  }
+
+  .ranking-table th, .ranking-table td {
+    padding: 0.875rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ranking-table th {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    font-weight: 600;
+  }
+
+  .is-champion-row {
+    background: rgba(var(--primary), 0.04);
+  }
+
+  .rank-pill {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    background: var(--muted);
+    color: var(--muted-foreground);
+  }
+
+  .rank-pill.rank-1 {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  .brand-link {
+    color: var(--foreground);
+    text-decoration: none;
+  }
+
+  .brand-link:hover {
+    text-decoration: underline;
+  }
+
+  .line-badge {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+  }
+
+  .protocol-tags {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .p-tag {
+    font-size: 0.75rem;
+    padding: 0.1rem 0.35rem;
+    background: var(--secondary);
+    border-radius: 0.25rem;
+  }
+
+  .price-col {
+    font-weight: 700;
+    color: var(--foreground);
+  }
+
+  .unlock-tag {
+    font-size: 0.75rem;
+    color: var(--foreground);
+  }
+
+  .coupon-pill {
+    padding: 0.15rem 0.4rem;
+    background: var(--secondary);
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .action-btn {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.35rem;
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .action-btn:hover {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  /* Awards */
+  .section-heading {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--foreground);
+  }
+
+  .awards-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .awards-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .award-card {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    background: var(--card);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .award-icon {
+    font-size: 1.75rem;
+  }
+
+  .award-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--foreground);
+  }
+
+  .award-desc {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    line-height: 1.5;
+    flex-grow: 1;
+  }
+
+  .award-picks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .award-tag {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    border-radius: 0.5rem;
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+
+  .award-tag:hover {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  /* Methodology */
+  .methodology-card {
+    background: var(--card);
+    border-color: var(--border);
+  }
+
+  .methodology-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--foreground);
+  }
+
+  .methodology-points {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    font-size: 0.9375rem;
+    color: var(--muted-foreground);
+    line-height: 1.6;
+  }
+
+  .m-point strong {
+    color: var(--foreground);
+  }
+</style>

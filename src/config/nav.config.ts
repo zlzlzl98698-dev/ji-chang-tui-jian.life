@@ -20,19 +20,41 @@ export interface NavItem {
 /** Main navigation items for header */
 export const mainNav: NavItem[] = [
   { href: "/", labelKey: "nav.home" },
-  { href: "/about", labelKey: "nav.about" },
-  { href: "/services", labelKey: "nav.services" },
-  { href: "/pricing", labelKey: "nav.pricing" },
-  { href: "/blog", labelKey: "nav.blog" },
-  { href: "/contact", labelKey: "nav.contact" },
-] as const;
+  {
+    href: "/airports",
+    labelKey: "nav.airports",
+    children: [
+      { href: "/airports", labelKey: "nav.airports" },
+      { href: "/rankings", labelKey: "nav.rankings" },
+      { href: "/recommendations", labelKey: "nav.recommendations" },
+    ],
+  },
+  { href: "/free-nodes", labelKey: "nav.freeNodes" },
+  { href: "/free-trial", labelKey: "nav.freeTrial" },
+  { href: "/warning", labelKey: "nav.warning" },
+  {
+    href: "/faq",
+    labelKey: "nav.knowledgeHub",
+    children: [
+      { href: "/faq", labelKey: "nav.faq" },
+      { href: "/clients", labelKey: "nav.clients" },
+      { href: "/blog", labelKey: "nav.blog" },
+      { href: "/about", labelKey: "nav.about" },
+    ],
+  },
+];
 
 /** Footer navigation grouped by section */
 export const footerNav = {
   /** Product and service links */
   product: [
-    { href: "/services", labelKey: "nav.services" },
-    { href: "/pricing", labelKey: "nav.pricing" },
+    { href: "/recommendations", labelKey: "nav.recommendations" },
+    { href: "/rankings", labelKey: "nav.rankings" },
+    { href: "/free-nodes", labelKey: "nav.freeNodes" },
+    { href: "/free-trial", labelKey: "nav.freeTrial" },
+    { href: "/warning", labelKey: "nav.warning" },
+    { href: "/faq", labelKey: "nav.faq" },
+    { href: "/clients", labelKey: "nav.clients" },
   ] as const,
   /** Legal pages and terms */
   legal: [
@@ -42,12 +64,12 @@ export const footerNav = {
   /** Social media and contact links */
   social: [
     {
-      href: "https://github.com/milzamsz/astro-cloudflare-starter",
-      labelKey: "footer.github",
+      href: "/about",
+      labelKey: "nav.about",
     },
     {
-      href: "https://www.linkedin.com/in/milzamsz/",
-      labelKey: "footer.linkedin",
+      href: "/contact",
+      labelKey: "nav.contact",
     },
   ] as const,
 } as const;

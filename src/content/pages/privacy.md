@@ -2,33 +2,41 @@
 locale: en
 slug: privacy
 title: Privacy Policy
-description: Privacy policy for this boilerplate website.
+description: Privacy policy and data protection practices for ji-chang-tui-jian.life.
 sections:
   - type: hero
     title: Privacy Policy
-    content: How we manage and protect your data.
+    content: How we manage, safeguard, and respect your data.
 isLegal: true
 order: 5
 translationKey: privacy
 ---
 
-Last updated: June 24, 2026.
+Last updated: November 8, 2026.
 
-This policy explains how this site handles your data. This is placeholder copy
-provided with the template — replace it with a policy reviewed by your own legal
-counsel before launch.
+This Privacy Policy explains how **ji-chang-tui-jian.life** ("we", "our", or "us") handles information when you visit and interact with our website.
 
-## Information We Collect
+## 1. Information We Collect
 
-We collect information you voluntarily provide through contact forms and newsletter signups.
+We prioritize user privacy and minimize data collection:
+- **Voluntary Information**: When you contact us via email or contact forms, we receive your email address and any details you provide.
+- **Technical & Usage Data**: Anonymous traffic metrics (such as visited pages, referrers, and device types) to improve site performance and user experience.
 
-## Use of Information
+## 2. How We Use Information
 
-The information we collect is used to:
-- Provide services you request
-- Send updates and related information
-- Improve user experience
+The information collected is used solely to:
+- Respond to inquiries and provide assistance.
+- Maintain and improve website performance, security, and content quality.
+- Prevent abuse, malicious traffic, and unauthorized activities.
 
-## Data Protection
+## 3. Cookies and Analytics
 
-We implement reasonable security measures to protect your data.
+We do not use invasive tracking cookies. Any analytics used are configured in privacy-first modes without storing personally identifiable information.
+
+## 4. Third-Party Links
+
+Our website contains links to third-party services and documentation. We are not responsible for the privacy practices or content of external sites.
+
+## 5. Contact Information
+
+If you have questions regarding this Privacy Policy, please contact us at **contact@ji-chang-tui-jian.life**.

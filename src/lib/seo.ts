@@ -12,12 +12,19 @@ export interface SeoMeta {
 
 /**
  * Generate the canonical URL for a given locale and path.
- * Handles Astro i18n prefix routing (prefixDefaultLocale: false).
+ * Ensures 100% synchronization with XML sitemaps and directory routing standards.
  */
 export function canonicalUrl(locale: Locale, path: string): string {
   const prefix = localePrefix(locale);
-  const normalized = path.replace(/\/$/, "");
-  return `${siteConfig.url}${prefix}${normalized || ""}`;
+  const clean = path.replace(/^\/+|\/+$/g, "");
+  if (!clean) {
+    return `${siteConfig.url}${prefix}/`;
+  }
+  // If it's a file with extension like .xml or .txt, don't add trailing slash
+  if (/\.[a-z0-9]+$/i.test(clean)) {
+    return `${siteConfig.url}${prefix}/${clean}`;
+  }
+  return `${siteConfig.url}${prefix}/${clean}/`;
 }
 
 /**
@@ -47,7 +54,7 @@ export function jsonLdWebSite(meta: SeoMeta) {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: siteConfig.name,
-    url: siteConfig.url,
+    url: `${siteConfig.url}/`,
     description: siteConfig.description,
     inLanguage: meta.locale,
   };
@@ -79,12 +86,9 @@ export function ogMeta(meta: SeoMeta) {
   };
 
   if (imageUrl) {
-    // For CloudFlare Pages, og:image is the transformed URL from the R2 bucket.
-    // og:image:secure_url = same as og:url (canonical) when accessible over HTTPS.
-    // og:image:width/height come from the preset.
     base["og:image"] = imageUrl;
     base["og:image:secure_url"] = imageUrl;
-    base["og:image:width"] = "1200"; // Default to hero preset size
+    base["og:image:width"] = "1200";
     base["og:image:height"] = "630";
   }
 
@@ -99,7 +103,7 @@ export function jsonLdOrganization() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: siteConfig.name,
-    url: siteConfig.url,
+    url: `${siteConfig.url}/`,
     description: siteConfig.description,
   };
 }

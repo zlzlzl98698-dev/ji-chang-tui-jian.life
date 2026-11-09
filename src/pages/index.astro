@@ -1,164 +1,762 @@
 ---
 import MarketingLayout from "../layouts/MarketingLayout.astro";
-import Hero from "../components/Hero.astro";
+import { airports, getTopAirports, getAirportBySlug } from "../data/airports";
+import AirportCard from "../components/airports/AirportCard.astro";
 import FAQ from "../components/FAQ.astro";
 import CTA from "../components/CTA.astro";
-import { getCollection, type CollectionEntry } from "astro:content";
-import {
-  FeatureTabs,
-  StackMarquee,
-  Credibility,
-  LighthouseScores,
-} from "../components/landing/index";
-import { t } from "../i18n/ui";
-
-const stackEntries = (await getCollection("stack"))
-  .sort(
-    (a: CollectionEntry<"stack">, b: CollectionEntry<"stack">) =>
-      a.data.order - b.data.order,
-  )
-  .map((entry: CollectionEntry<"stack">) => entry.data);
 
 const locale = (Astro.currentLocale || "en") as "en";
-const tabs = [
-  {
-    id: "performance",
-    icon: "zap",
-    heading: "Performance",
-    description:
-      "A lightweight, static-first stack that ships minimal JavaScript and renders from Cloudflare's edge network.",
-    points: [
-      "Static-first rendering by default",
-      "Zero-JS islands architecture",
-      "Edge delivery with smart caching",
-    ],
-    visual: "$ npm run build\n✓ 25 pages built in 6.4s\n→ Deployed to the edge",
+const top10 = getTopAirports(10);
+const guangsu = getAirportBySlug("guangsu") || top10[0];
+const featuredAirports = airports.slice(0, 6);
+
+const homeSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "机场life - 2026网络加速与机场评测推荐实验室",
+  url: "https://ji-chang-tui-jian.life/",
+  description: "全球优质网络加速与42家机场品牌全量实测推荐平台，专注IEPL/IPLC专线、晚高峰延迟与流媒体AI解锁监测。",
+  publisher: {
+    "@type": "Organization",
+    name: "机场life",
+    url: "https://ji-chang-tui-jian.life/",
   },
-  {
-    id: "content",
-    icon: "pen-line",
-    heading: "Content",
-    description:
-      "Author in Markdown with a Git-based workflow. Blog, docs, and services are type-safe content collections.",
-    points: [
-      "Type-safe Markdown collections",
-      "Versioned and reviewed in Git",
-      "Blog, docs, and service pages",
-    ],
-    visual:
-      "src/content/\n├─ blog/\n├─ docs/\n├─ services/\n└─ pages/",
-  },
-  {
-    id: "growth",
-    icon: "trending-up",
-    heading: "Growth",
-    description:
-      "Everything search engines and social platforms need is generated for you on every build.",
-    points: [
-      "Sitemap, RSS, and robots.txt",
-      "Canonical URLs and JSON-LD",
-      "Dynamic Open Graph images",
-    ],
-    visual:
-      "<meta property=\"og:image\" ... />\n<link rel=\"canonical\" ... />\n<script type=\"application/ld+json\">",
-  },
-];
+};
 ---
 
 <MarketingLayout
-  title={t(locale, "nav.home")}
-  description="A boilerplate for fast marketing websites."
+  title="机场life - 2026优质机场推荐与专线节点测速评测实验室"
+  description="机场life收录全球42家主流网络加速品牌，基于真实晚高峰测速、IEPL/IPLC专线抗封锁、ChatGPT与流媒体解锁能力持续监测。为您提供最新机场评测排行榜、专属优惠券与客户端配置指南。"
   locale={locale}
   path="/"
+  jsonLd={homeSchema}
 >
-  <Hero
-    variant="centered"
-    eyebrow="Marketing Starter"
-    headline={t(locale, "hero.title")}
-    subheadline={t(locale, "hero.subtitle")}
-    primaryCta={{ label: t(locale, "hero.cta"), href: "/services" }}
-    secondaryCta={{ label: "Read the blog", href: "/blog" }}
-    locale={locale}
-  />
 
-  <section class="container py-16">
-    <header class="section-head">
-      <p class="section-head__eyebrow">Why this stack</p>
-      <h2 class="section-head__title">Built for performance and scale</h2>
-      <p class="section-head__lead">
-        Everything you need to ship a fast marketing site.
+  <!-- Hero Section with 3-A Conversion Focus -->
+  <section class="hero-conversion py-12 md:py-20 border-b">
+    <div class="container max-w-6xl mx-auto">
+      <div class="hero-grid">
+        <!-- Left: Hero Value Proposition -->
+        <div class="hero-main">
+          <div class="inline-badge mb-4">
+            <span class="pulse-dot"></span>
+            2026 网络加速基准实验室 · 42 家机场多维实测
+          </div>
+          <h1 class="hero-title mb-6">
+            机场life <br />
+            <span class="gradient-text">专线节点实测与科学上网评测指南</span>
+          </h1>
+          <p class="hero-subtitle mb-8">
+            拒绝盲目跟风与千篇一律的软文推荐。依托 NOC 全天候晚高峰真实测速、IEPL/IPLC 专线丢包监控与 OpenAI ChatGPT / 4K 流媒体解锁监测，为您呈现真实、透明的选购参考。
+          </p>
+
+          <div class="hero-actions mb-10">
+            <a href="/rankings" class="hero-btn btn-primary">
+              🏆 2026 年度十大推荐榜单
+            </a>
+            <a href="/airports" class="hero-btn btn-secondary">
+              🔍 检索 42 家机场实测库
+            </a>
+            <a href="/clients" class="hero-btn btn-ghost">
+              📱 客户端配置指南
+            </a>
+          </div>
+
+          <!-- Trust Badges -->
+          <div class="trust-stats">
+            <div class="stat-item">
+              <span class="stat-number">42+</span>
+              <span class="stat-label">收录实测品牌</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="stat-number">100%</span>
+              <span class="stat-label">真实晚高峰跑分</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="stat-number">24/7</span>
+              <span class="stat-label">节点丢包持续监测</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="stat-number">0 中转</span>
+              <span class="stat-label">直达官方官方开通</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Champion Spotlight (#1 光速云) -->
+        <div class="hero-spotlight">
+          <div class="spotlight-card border rounded-3xl p-6 sm:p-8">
+            <div class="spotlight-header">
+              <div class="champion-ribbon">👑 2026 年度综合总榜 TOP 1</div>
+              <div class="score-badge">综合评分 9.9 / 10</div>
+            </div>
+
+            <div class="spotlight-brand">
+              <h2 class="brand-title">{guangsu.name}</h2>
+              <span class="brand-line">{guangsu.lineType}</span>
+            </div>
+
+            <p class="spotlight-desc">
+              采用企业级高速内网传输，全节点原生 IP 支持，晚高峰 4K/8K 视频秒开，无惧敏感时期波动。
+            </p>
+
+            <div class="spotlight-offers">
+              <div class="offer-row">
+                <span class="offer-label">🔥 入门首选:</span>
+                <span class="offer-val">年付轻量版 ¥99 (折合仅 8元/月)</span>
+              </div>
+              <div class="offer-row">
+                <span class="offer-label">🎱 绝版永久:</span>
+                <span class="offer-val">致敬斯诺克147永久套餐 247GB 永不清零</span>
+              </div>
+              <div class="offer-row coupon-highlight">
+                <span class="offer-label">🏷️ 专属优惠券:</span>
+                <code class="coupon-box">{guangsu.coupon}</code>
+              </div>
+            </div>
+
+            <div class="spotlight-cta">
+              <a
+                href={guangsu.affLink}
+                target="_blank"
+                rel="nofollow sponsored noopener"
+                class="spotlight-btn btn-champion"
+              >
+                <span>立即开通光速云 (享专属折扣) ↗</span>
+              </a>
+              <a href={`/airports/${guangsu.slug}`} class="review-link">
+                查看光速云完整晚高峰测速跑分与评测报告 →
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Comparison: Top 3 Podium Showcase -->
+  <section class="container py-16 max-w-6xl mx-auto">
+    <div class="section-head text-center max-w-3xl mx-auto mb-12">
+      <p class="section-eyebrow">Top 3 Recommended</p>
+      <h2 class="section-title">2026 年度稳居第一梯队的核心推荐</h2>
+      <p class="section-lead">
+        根据网络可用率 SLA、晚高峰丢包与节点冗余度评选出的三大主力梯队。
       </p>
-    </header>
-    <FeatureTabs client:visible tabs={tabs} />
+    </div>
+
+    <div class="top3-grid mb-12">
+      {top10.slice(0, 3).map((item, idx) => (
+        <div class={`top3-card ${idx === 0 ? "is-first" : ""}`}>
+          <div class="top3-rank">
+            {idx === 0 ? "🥇 TOP 1 旗舰推荐" : idx === 1 ? "🥈 TOP 2 专线主力" : "🥉 TOP 3 高性价比"}
+          </div>
+          <h3 class="top3-name">{item.name}</h3>
+          <p class="top3-line">{item.lineType}</p>
+          <div class="top3-price">{item.minPrice}</div>
+          <p class="top3-desc">{item.highlights[0] || item.description}</p>
+          <div class="top3-links">
+            <a
+              href={item.affLink}
+              target="_blank"
+              rel="nofollow sponsored noopener"
+              class="card-btn btn-primary"
+            >
+              官网开通
+            </a>
+            <a href={`/airports/${item.slug}`} class="card-btn btn-secondary">
+              详细评测
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="text-center">
+      <a href="/rankings" class="inline-link-btn">
+        查看完整 2026 年度十大优质机场横评榜单 →
+      </a>
+    </div>
   </section>
 
-  <section class="container py-10">
-    <header class="section-head">
-      <h2 class="section-head__title">Powered by a modern stack</h2>
-    </header>
-    <StackMarquee items={stackEntries} />
+  <!-- Featured Airports Grid -->
+  <section class="container py-16 max-w-6xl mx-auto border-t">
+    <div class="section-head flex flex-wrap justify-between items-end mb-10">
+      <div>
+        <p class="section-eyebrow">Observatory Database</p>
+        <h2 class="section-title">精选优质机场实测评测库</h2>
+        <p class="section-lead">已完成最新跑分监测与解锁验证的精选节点服务商。</p>
+      </div>
+      <div>
+        <a href="/airports" class="btn-secondary px-5 py-2.5 rounded-xl font-medium inline-block">
+          查看全部 42 家机场 →
+        </a>
+      </div>
+    </div>
+
+    <div class="airports-grid mb-12">
+      {featuredAirports.map((airport) => (
+        <AirportCard airport={airport} />
+      ))}
+    </div>
   </section>
 
-  <section class="container py-16">
-    <Credibility
-      stats={[
-        { value: "55+", label: "Pages" },
-        { value: "100%", label: "Static-first" },
-        { value: "A11y", label: "WCAG AA" },
-      ]}
-      logos={[
-        { name: "Astro", src: undefined },
-        { name: "Cloudflare", src: undefined },
-        { name: "Tailwind", src: undefined },
-      ]}
-    />
-  </section>
-
-  <section class="container py-16">
-    <header class="section-head">
-      <h2 class="section-head__title">Perfect Lighthouse scores</h2>
-      <p class="section-head__lead">
-        Target scores, verified with Lighthouse — optimized out of the box for
-        performance, accessibility, and SEO.
+  <!-- Client Guides Section Preview -->
+  <section class="container py-16 max-w-6xl mx-auto border-t">
+    <div class="section-head text-center max-w-3xl mx-auto mb-12">
+      <p class="section-eyebrow">Cross-Platform Clients</p>
+      <h2 class="section-title">全平台代理客户端下载与导入指南</h2>
+      <p class="section-lead">
+        支持 Windows、macOS、iOS、Android、Linux 及 OpenWrt 软路由，无论是 Clash Verge Rev 还是小火箭，都能快速上手。
       </p>
-    </header>
-    <LighthouseScores />
+    </div>
+
+    <div class="platform-cards-grid mb-10">
+      <div class="platform-box">
+        <div class="box-icon">💻</div>
+        <h3 class="box-title">Windows 平台</h3>
+        <p class="box-desc">首选 Clash Verge Rev (Mihomo内核) 或 v2rayN，支持 TUN 全局虚拟网卡。</p>
+        <a href="/clients#platform-windows" class="box-link">查看教程 →</a>
+      </div>
+      <div class="platform-box">
+        <div class="box-icon">📱</div>
+        <h3 class="box-title">Android 安卓</h3>
+        <p class="box-desc">首推 v2rayNG 与 FlClash，支持分应用代理与订阅自动更新。</p>
+        <a href="/clients#platform-android" class="box-link">查看教程 →</a>
+      </div>
+      <div class="platform-box">
+        <div class="box-icon">🍎</div>
+        <h3 class="box-title">iOS / iPadOS</h3>
+        <p class="box-desc">Shadowrocket (小火箭) 或 Sing-box，海外 Apple ID 获取与安装方案。</p>
+        <a href="/clients#platform-ios" class="box-link">查看教程 →</a>
+      </div>
+      <div class="platform-box">
+        <div class="box-icon">🖥️</div>
+        <h3 class="box-title">macOS 苹果电脑</h3>
+        <p class="box-desc">Clash Verge Rev 或 Surge，原生适配 Apple Silicon M 系列芯片。</p>
+        <a href="/clients#platform-macos" class="box-link">查看教程 →</a>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <a href="/clients" class="inline-link-btn">
+        浏览全平台客户端完整生态与配置指南 →
+      </a>
+    </div>
   </section>
 
+  <!-- Comprehensive FAQ -->
   <FAQ
-    title="Frequently asked questions"
+    title="2026 网络加速与机场选购核心指南 FAQ"
     items={[
       {
-        question: "Is this multilanguage-ready?",
+        question: "什么是 IEPL / IPLC 专线？相比普通 BGP 中转有什么优势？",
         answer:
-          "Yes. The i18n engine is wired up and ships English-first, so adding more locales is a matter of dropping in translations and content.",
+          "IEPL（国际以太网专线）与 IPLC（国际私有租用线路）属于企业级跨境点对点内网连接，数据完全不经过公网防火长城（GFW），因此具备'零丢包、超低延迟、晚高峰不拥堵、抗封锁能力强'等决定性优势，是高稳定需求用户的首选。",
       },
       {
-        question: "Is SEO handled out of the box?",
+        question: "机场套餐应该买月付还是年付？",
         answer:
-          "Meta tags, canonical URLs, sitemap, RSS, JSON-LD, and dynamic OG images are all connected by default.",
+          "对于新接触的机场，建议先月付体验 1 个月，确认晚高峰延迟与流媒体解锁符合个人需求；对于像光速云这种运营多年、口碑稳定的老牌服务商，可选择年付轻量套餐（如99元/年折合8元/月）或绝版不限时永久套餐，性价比最高。",
       },
       {
-        question: "Where does it deploy?",
+        question: "如何解决 ChatGPT / Claude 或 Netflix 提示'地区不受支持'或'代理检测'？",
         answer:
-          "It's built for Cloudflare Pages with optional R2 media storage, but the static output runs on any modern host.",
+          "主流大模型与流媒体服务会对机房原生 IDC IP 进行封锁。您需要在客户端中选择带有'原生家庭宽带'或'解锁/AI专线'标签的节点。机场life 实测库中所有标记'全环境支持'的品牌均通过了防风控验证。",
       },
       {
-        question: "How do I manage content?",
+        question: "客户端测试延迟低，但实际看网页视频卡顿是什么原因？",
         answer:
-          "Content lives in Markdown collections (blog, docs, services, pages) that are versioned and reviewed in Git.",
+          "客户端内置的'Ping/延迟测试'通常仅测试 TCP 握手或 HTTP 响应头，无法反映带宽吞吐量与丢包率。晚高峰网络拥塞主要体现在 UDP 丢包与限速上。请参考机场life 提供的 NOC 晚高峰测速跑分大图，以实际下载速率为准。",
       },
     ]}
   />
 
+  <!-- Bottom CTA -->
   <CTA
-    eyebrow="Get started"
-    title="Ready to build your site?"
-    content="Explore the services or dive into the docs — the whole stack is ready to go."
-    ctaText="Explore services"
-    ctaHref="/services"
-    secondaryText="Read the docs"
-    secondaryHref="/docs"
+    eyebrow="立即开始"
+    title="告别网络卡顿，开启超高清极速跨境连接"
+    content="精选42家可靠机场节点，专属优惠码最高立减20%，直连官方正品保障。"
+    ctaText="获取 Top 1 光速云专线"
+    ctaHref="/airports/guangsu"
+    secondaryText="浏览全部 42 家实测"
+    secondaryHref="/airports"
     locale={locale}
   />
 </MarketingLayout>
+
+<style>
+  .hero-conversion {
+    background: radial-gradient(circle at 50% 0%, var(--card) 0%, var(--background) 100%);
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  @media (min-width: 1024px) {
+    .hero-grid {
+      grid-template-columns: 1.15fr 0.85fr;
+    }
+  }
+
+  .inline-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+  }
+
+  .pulse-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--primary);
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.2); }
+  }
+
+  .hero-title {
+    font-size: clamp(2.25rem, 4.5vw, 3.25rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--foreground);
+  }
+
+  .gradient-text {
+    color: var(--primary);
+  }
+
+  .hero-subtitle {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--muted-foreground);
+    max-width: 580px;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .hero-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.35rem;
+    border-radius: 0.75rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  .btn-primary:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    background: var(--muted);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--foreground);
+    border: 1px solid var(--border);
+  }
+
+  .btn-ghost:hover {
+    background: var(--secondary);
+  }
+
+  .trust-stats {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-number {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--foreground);
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 1.75rem;
+    background: var(--border);
+  }
+
+  /* Spotlight Card */
+  .spotlight-card {
+    background: var(--card);
+    border-color: var(--border);
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+    position: relative;
+    border: 2px solid var(--primary);
+  }
+
+  .spotlight-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .champion-ribbon {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+  }
+
+  .score-badge {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--foreground);
+  }
+
+  .brand-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--foreground);
+    margin: 0;
+  }
+
+  .brand-line {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    display: block;
+    margin-top: 0.15rem;
+  }
+
+  .spotlight-desc {
+    font-size: 0.9375rem;
+    color: var(--muted-foreground);
+    line-height: 1.6;
+    margin: 1rem 0;
+  }
+
+  .spotlight-offers {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.85rem;
+    border-radius: 0.75rem;
+    background: var(--secondary);
+    margin-bottom: 1.25rem;
+  }
+
+  .offer-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8125rem;
+    gap: 0.5rem;
+  }
+
+  .offer-label {
+    color: var(--foreground);
+    font-weight: 600;
+  }
+
+  .offer-val {
+    color: var(--foreground);
+    font-weight: 500;
+  }
+
+  .coupon-highlight {
+    align-items: center;
+  }
+
+  .coupon-box {
+    padding: 0.15rem 0.45rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.25rem;
+    font-weight: 800;
+    color: var(--primary);
+  }
+
+  .spotlight-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+  }
+
+  .spotlight-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.85rem 1.25rem;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+
+  .btn-champion {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  .btn-champion:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+
+  .review-link {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+    text-decoration: none;
+  }
+
+  .review-link:hover {
+    color: var(--foreground);
+    text-decoration: underline;
+  }
+
+  /* Section heads */
+  .section-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted-foreground);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 800;
+    color: var(--foreground);
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+
+  .section-lead {
+    font-size: 1rem;
+    color: var(--muted-foreground);
+    line-height: 1.6;
+    margin-top: 0.5rem;
+  }
+
+  /* Top 3 grid */
+  .top3-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .top3-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .top3-card {
+    padding: 1.75rem;
+    border-radius: 1.25rem;
+    border: 1px solid var(--border);
+    background: var(--card);
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.03);
+  }
+
+  .top3-card.is-first {
+    border-color: var(--primary);
+  }
+
+  .top3-rank {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin-bottom: 0.5rem;
+  }
+
+  .top3-name {
+    font-size: 1.375rem;
+    font-weight: 800;
+    color: var(--foreground);
+    margin: 0;
+  }
+
+  .top3-line {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+    margin: 0.25rem 0 0.75rem 0;
+  }
+
+  .top3-price {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--foreground);
+    margin-bottom: 0.75rem;
+  }
+
+  .top3-desc {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+    flex-grow: 1;
+  }
+
+  .top3-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .card-btn {
+    padding: 0.65rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+  }
+
+  .inline-link-btn {
+    display: inline-block;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--foreground);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: var(--secondary);
+    transition: all 0.15s ease;
+  }
+
+  .inline-link-btn:hover {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  /* Airports grid */
+  .airports-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .airports-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .airports-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* Platform box */
+  .platform-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .platform-cards-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .platform-cards-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .platform-box {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    background: var(--card);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .box-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .box-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin-bottom: 0.5rem;
+  }
+
+  .box-desc {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+  }
+
+  .box-link {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--foreground);
+    text-decoration: none;
+  }
+
+  .box-link:hover {
+    text-decoration: underline;
+  }
+</style>

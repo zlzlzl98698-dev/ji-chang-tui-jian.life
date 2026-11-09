@@ -1,0 +1,322 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { airports } from "../../data/airports";
+import AirportCard from "../../components/airports/AirportCard.astro";
+
+const locale = (Astro.currentLocale || "en") as "en";
+
+// Generate ItemList schema for SEO
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "2026年度 42 家机场品牌实测评测库",
+  description: "精选全球42家主流网络加速节点订阅，涵盖IEPL/IPLC专线、多协议与流媒体解锁能力评测。",
+  numberOfItems: airports.length,
+  itemListElement: airports.map((a, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: a.name,
+    url: `https://ji-chang-tui-jian.life/airports/${a.slug}`,
+  })),
+};
+---
+
+<MarketingLayout
+  title="42家机场品牌库 - 专线节点多维实测与评测排行榜 | 机场life"
+  description="机场life收录42家主流网络加速服务商，提供IEPL/IPLC专线、VLESS/Shadowsocks协议、流媒体与AI解锁能力深度测评对比，配备真实测速大图与专属优惠码。"
+  locale={locale}
+  path="/airports"
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />
+
+  <section class="container py-12">
+    <header class="section-head text-center max-w-3xl mx-auto mb-10">
+      <p class="section-head__eyebrow">Database & Observatory</p>
+      <h1 class="section-head__title">42 家机场品牌库与实测基准</h1>
+      <p class="section-head__lead">
+        基于真实晚高峰测速、协议架构与流媒体解锁深度验证。拒绝千篇一律，客观透明呈现各品牌优势与边界。
+      </p>
+    </header>
+
+    <!-- Search & Filter Controls -->
+    <div class="filters-panel" data-filters>
+      <div class="search-box">
+        <input
+          type="search"
+          id="brand-search"
+          placeholder="搜索品牌名称（如：光速云、暮光加速、IEPL专线）..."
+          class="search-input"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="filter-groups">
+        <div class="filter-group">
+          <span class="filter-label">线路架构:</span>
+          <div class="filter-tags" data-filter-type="line">
+            <button class="filter-btn is-active" data-value="all">全部</button>
+            <button class="filter-btn" data-value="IEPL">IEPL专线</button>
+            <button class="filter-btn" data-value="IPLC">IPLC专线</button>
+            <button class="filter-btn" data-value="BGP">BGP中转</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-label">核心协议:</span>
+          <div class="filter-tags" data-filter-type="protocol">
+            <button class="filter-btn is-active" data-value="all">全部</button>
+            <button class="filter-btn" data-value="VLESS">VLESS</button>
+            <button class="filter-btn" data-value="Shadowsocks">Shadowsocks</button>
+            <button class="filter-btn" data-value="Trojan">Trojan</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-meta">
+        <span>共收录 <strong id="visible-count">{airports.length}</strong> 家品牌</span>
+        <span class="disclosure-tag">🛡️ 声明：部分链接包含推广代码，收益用于服务器与测速节点维保，不影响您的订阅价格</span>
+      </div>
+    </div>
+
+    <!-- Airport Cards Grid -->
+    <div class="airports-grid" id="airports-container">
+      {airports.map((airport) => (
+        <AirportCard airport={airport} />
+      ))}
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="empty-state" hidden>
+      <p class="empty-title">未找到匹配的机场品牌</p>
+      <p class="empty-desc">请尝试调整搜索关键词或重置筛选条件</p>
+      <button class="btn-reset" id="reset-filters">重置所有筛选</button>
+    </div>
+  </section>
+</MarketingLayout>
+
+<script>
+  function initAirportFilters() {
+    const searchInput = document.getElementById("brand-search") as HTMLInputElement | null;
+    const cards = document.querySelectorAll<HTMLElement>("[data-airport-card]");
+    const visibleCount = document.getElementById("visible-count");
+    const emptyState = document.getElementById("empty-state");
+    const resetBtn = document.getElementById("reset-filters");
+
+    let currentSearch = "";
+    let selectedLine = "all";
+    let selectedProtocol = "all";
+
+    function filterCards() {
+      let count = 0;
+      cards.forEach((card) => {
+        const name = (card.dataset.name || "").toLowerCase();
+        const line = card.dataset.line || "";
+        const protocols = card.dataset.protocol || "";
+
+        const matchSearch = !currentSearch || name.includes(currentSearch) || line.toLowerCase().includes(currentSearch);
+        const matchLine = selectedLine === "all" || line.includes(selectedLine);
+        const matchProtocol = selectedProtocol === "all" || protocols.includes(selectedProtocol);
+
+        if (matchSearch && matchLine && matchProtocol) {
+          card.style.display = "";
+          count++;
+        } else {
+          card.style.display = "none";
+        }
+      });
+
+      if (visibleCount) visibleCount.textContent = String(count);
+      if (emptyState) {
+        if (count === 0) {
+          emptyState.removeAttribute("hidden");
+        } else {
+          emptyState.setAttribute("hidden", "true");
+        }
+      }
+    }
+
+    searchInput?.addEventListener("input", (e) => {
+      currentSearch = (e.target as HTMLInputElement).value.trim().toLowerCase();
+      filterCards();
+    });
+
+    document.querySelectorAll<HTMLButtonElement>(".filter-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const parent = btn.parentElement;
+        if (!parent) return;
+        parent.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("is-active"));
+        btn.classList.add("is-active");
+
+        const filterType = parent.dataset.filterType;
+        const val = btn.dataset.value || "all";
+        if (filterType === "line") selectedLine = val;
+        if (filterType === "protocol") selectedProtocol = val;
+        filterCards();
+      });
+    });
+
+    resetBtn?.addEventListener("click", () => {
+      if (searchInput) searchInput.value = "";
+      currentSearch = "";
+      selectedLine = "all";
+      selectedProtocol = "all";
+      document.querySelectorAll(".filter-tags").forEach((group) => {
+        group.querySelectorAll(".filter-btn").forEach((b, idx) => {
+          if (idx === 0) b.classList.add("is-active");
+          else b.classList.remove("is-active");
+        });
+      });
+      filterCards();
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", initAirportFilters);
+</script>
+
+<style>
+  .filters-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    box-shadow: 0 4px 16px -4px color-mix(in srgb, var(--foreground) 5%, transparent);
+  }
+
+  .search-box {
+    margin-bottom: var(--space-md);
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--background);
+    color: var(--foreground);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .search-input:focus {
+    border-color: var(--ring);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent);
+  }
+
+  .filter-groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+  }
+
+  .filter-label {
+    font-size: 0.825rem;
+    font-weight: 700;
+    color: var(--muted-foreground);
+    min-width: 4.5rem;
+  }
+
+  .filter-tags {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .filter-btn:hover {
+    background: var(--secondary-hover);
+  }
+
+  .filter-btn.is-active {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border-color: var(--primary);
+    font-weight: 700;
+  }
+
+  .results-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-top: var(--space-sm);
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+  }
+
+  .disclosure-tag {
+    font-size: 0.75rem;
+    opacity: 0.85;
+  }
+
+  .airports-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+
+  @media (max-width: 1024px) {
+    .airports-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .airports-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: var(--space-3xl) var(--space-lg);
+    background: var(--card);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-xl);
+  }
+
+  .empty-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0 0 0.5rem 0;
+  }
+
+  .empty-desc {
+    color: var(--muted-foreground);
+    font-size: 0.9rem;
+    margin: 0 0 var(--space-md) 0;
+  }
+
+  .btn-reset {
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-md);
+    background: var(--primary);
+    color: var(--primary-foreground);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+  }
+</style>

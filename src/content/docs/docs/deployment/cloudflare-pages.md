@@ -24,7 +24,7 @@ pnpm build
 npx wrangler pages deploy dist --branch=main
 
 # Or via Cloudflare Dashboard
-# Project: astro-cloudflare
+# Project: ji-chang-tui-jian
 ```
 
 ## Required Secrets

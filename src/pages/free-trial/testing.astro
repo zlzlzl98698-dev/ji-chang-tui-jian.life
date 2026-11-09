@@ -1,0 +1,280 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { airports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const guangsu = airports.find((a) => a.slug === "guangsu") || airports[0];
+---
+
+<MarketingLayout
+  title="新用户 10 分钟极限压测指南：买前验货防踩坑 SOP (2026硬核实测) | 机场life"
+  description="购买翻墙机场后如何在退款窗口期内完成10分钟极限压测验货：涵盖晚高峰MTR连续丢包率排查、YouTube 4K Stats for nerds缓冲健康度、住宅双ISP伪装度及大模型风控全套实操流程。"
+  locale={locale}
+  path="/free-trial/testing"
+>
+  <article class="container py-12 max-w-5xl mx-auto">
+    <nav class="breadcrumb mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">首页</a></li>
+        <li><span>/</span></li>
+        <li><a href="/free-trial" class="hover:text-primary transition-colors">免费试用</a></li>
+        <li><span>/</span></li>
+        <li class="text-foreground font-medium" aria-current="page">10分钟极限压测</li>
+      </ol>
+    </nav>
+
+    <header class="page-head max-w-4xl mb-12">
+      <div class="inline-badge mb-3">验货排雷 · 硬核实测</div>
+      <h1 class="page-title mb-4">新用户 10 分钟极限压测指南：买前验货防踩坑 SOP</h1>
+      <p class="page-lead">
+        买完机场不要等到几天后才发现晚高峰断网。利用退款保障期内的黄金测试窗口，按照以下 4 步标准化 SOP 流程，10 分钟辨别是否真专线、是否超售，抢在退款窗口关闭前作出退款或保留的理性决策。
+      </p>
+    </header>
+
+    <!-- Answer-First Box -->
+    <div class="p-6 rounded-2xl border border-border bg-card mb-12 space-y-4">
+      <h2 class="text-lg font-bold text-foreground flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span>
+        压测黄金铁律速览 (Answer-First)
+      </h2>
+      <ul class="text-xs text-muted-foreground space-y-2 leading-relaxed">
+        <li>&bull; <strong>黄金测试窗口：</strong>必须在 <strong>每晚 20:30 &mdash; 22:30</strong>（国际出口骨干网流量最高峰）进行压测。白天网络空闲时的测速数据毫无参考价值。</li>
+        <li>&bull; <strong>红线淘汰指标：</strong>晚高峰连续 100 次 Ping 丢包率 &gt; 5%、YouTube 4K 缓冲速度 &lt; 30,000 Kbps，或频繁弹出 Cloudflare 5 秒人机验证盾，达到任一红线应毫不犹豫申请退款。</li>
+        <li>&bull; <strong>优质专线基准：</strong>以光速云（Guangsu Cloud）深港 IEPL 专线为例，晚高峰丢包稳定为 0%，Connection Speed 常态突破 150,000 Kbps，ChatGPT 与 Claude 原生秒开。</li>
+      </ul>
+    </div>
+
+    <!-- Section 1 -->
+    <section class="prose-section mb-14 space-y-4">
+      <h2 class="section-title">01. 压测环境准备与基准设定</h2>
+      <p class="text-sm text-muted-foreground leading-relaxed">
+        为了消除本地干扰因素，测试前请确保：
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+        <div class="p-4 rounded-xl border border-border bg-card">
+          <h3 class="font-bold text-xs text-foreground mb-1">1. 禁用本地下载任务</h3>
+          <p class="text-xs text-muted-foreground">关闭迅雷、百度网盘、Steam 后台更新及一切局域网 P2P 共享程序。</p>
+        </div>
+        <div class="p-4 rounded-xl border border-border bg-card">
+          <h3 class="font-bold text-xs text-foreground mb-1">2. 优先有线网卡连接</h3>
+          <p class="text-xs text-muted-foreground">避免 2.4G Wi-Fi 的频段干扰造成的突发丢包，尽量使用千兆网线或 5G Wi-Fi 频段。</p>
+        </div>
+        <div class="p-4 rounded-xl border border-border bg-card">
+          <h3 class="font-bold text-xs text-foreground mb-1">3. 清除系统代理缓存</h3>
+          <p class="text-xs text-muted-foreground">重启客户端内核，确保使用全新的 TCP 连接池进行无污染测试。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Detailed 4-Step SOP -->
+    <section class="prose-section mb-14 space-y-6">
+      <h2 class="section-title">02. 四步标准化压测流程与执行细则</h2>
+
+      <!-- Step 1 -->
+      <div class="p-6 rounded-xl border border-border bg-card space-y-3">
+        <div class="flex items-center gap-3">
+          <span class="w-7 h-7 rounded-full bg-primary text-primary-foreground font-black flex items-center justify-center text-xs">
+            01
+          </span>
+          <h3 class="text-base font-bold text-foreground">
+            MTR 路由跳数与连续 100 次丢包率排查 (Packet Loss Test)
+          </h3>
+        </div>
+        <p class="text-xs text-muted-foreground leading-relaxed pl-10">
+          <strong>工具推荐：</strong>Windows 推荐使用 <code>WinMTR-v0.92</code>，macOS/Linux 推荐使用 <code>mtr -rw -c 100 入口IP</code>。
+        </p>
+        <div class="ml-10 p-4 rounded-lg bg-muted text-xs text-foreground leading-relaxed space-y-2">
+          <p><strong>执行方法：</strong>提取客户端中当前节点的入口 IP（或域名），启动连续 100 次 ICMP 探测。</p>
+          <p><strong>合格判定：</strong></p>
+          <ul class="list-disc pl-4 space-y-1 text-muted-foreground">
+            <li><strong>顶级 IEPL 专线：</strong>100 次 Ping 丢包率为 0%，抖动（Jitter）方差小于 5ms。</li>
+            <li><strong>合格中转：</strong>丢包率 &lt; 2%，抖动方差小于 15ms。</li>
+            <li><strong>严重超售废品：</strong>丢包率 &gt; 8%，最后一跳频繁出现 <code>Request timed out</code>。出现此情况直接退款。</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="p-6 rounded-xl border border-border bg-card space-y-3">
+        <div class="flex items-center gap-3">
+          <span class="w-7 h-7 rounded-full bg-primary text-primary-foreground font-black flex items-center justify-center text-xs">
+            02
+          </span>
+          <h3 class="text-base font-bold text-foreground">
+            YouTube 4K 60FPS 极速吞吐压测 (Stats for Nerds)
+          </h3>
+        </div>
+        <p class="text-xs text-muted-foreground leading-relaxed pl-10">
+          <strong>工具推荐：</strong>Chrome / Edge 浏览器访问 YouTube 官方 4K HDR 演示视频（如 Costa Rica 4K HDR 60fps）。
+        </p>
+        <div class="ml-10 p-4 rounded-lg bg-muted text-xs text-foreground leading-relaxed space-y-2">
+          <p><strong>执行方法：</strong>视频画质手动锁死在 <strong>2160p60 4K</strong>，在播放窗口右键唤起「详细统计信息（Stats for nerds）」，连续播放 3 分钟并观察三项指标：</p>
+          <ul class="list-disc pl-4 space-y-1 text-muted-foreground">
+            <li><strong>Connection Speed (连接速度)：</strong>优质线路 5 秒内飙升至 100,000 Kbps (100 Mbps) 以上；光速云实测常态突破 150,000 Kbps。</li>
+            <li><strong>Buffer Health (缓冲健康度)：</strong>健康状态必须稳定维持在 30 秒以上，哪怕偶尔出现网络抖动也不会导致视频暂停。</li>
+            <li><strong>Dropped Frames (丢帧率)：</strong>丢帧百分比必须小于 0.1%，若画面卡顿丢帧率 &gt; 5%，说明网络吞吐无法跟上解码。</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="p-6 rounded-xl border border-border bg-card space-y-3">
+        <div class="flex items-center gap-3">
+          <span class="w-7 h-7 rounded-full bg-primary text-primary-foreground font-black flex items-center justify-center text-xs">
+            03
+          </span>
+          <h3 class="text-base font-bold text-foreground">
+            落地 IP 纯净度与大模型流媒体解锁矩阵 (IP Quality Audit)
+          </h3>
+        </div>
+        <p class="text-xs text-muted-foreground leading-relaxed pl-10">
+          <strong>工具推荐：</strong><code>ipinfo.io</code>、<code>scamalytics.com</code>、OpenAI 与 Netflix 官方 Web 端。
+        </p>
+        <div class="ml-10 p-4 rounded-lg bg-muted text-xs text-foreground leading-relaxed space-y-2">
+          <p><strong>执行方法：</strong></p>
+          <ul class="list-disc pl-4 space-y-1 text-muted-foreground">
+            <li><strong>欺诈评分检测：</strong>在 Scamalytics 输入落地 IP，Fraud Score 必须 &lt; 20 分。若大于 50 分代表被各大反欺诈系统判定为高风险爬虫 IP。</li>
+            <li><strong>OpenAI / Claude 解锁：</strong>打开 ChatGPT (chatgpt.com)，在不刷新页面的情况下连续发起 3 次提问。如遇 <code>Unable to load site</code> 或无限循环 Cloudflare 验证盾，说明该节点 IP 已被拉黑。</li>
+            <li><strong>Netflix 区域原创内容解锁：</strong>访问 Netflix 搜索非自制美剧（如 Breaking Bad 或 Friends），能正常展示并播放即代表具备原生 Residential / 解锁机房属性。</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="p-6 rounded-xl border border-border bg-card space-y-3">
+        <div class="flex items-center gap-3">
+          <span class="w-7 h-7 rounded-full bg-primary text-primary-foreground font-black flex items-center justify-center text-xs">
+            04
+          </span>
+          <h3 class="text-base font-bold text-foreground">
+            多线程并发与长连接保活抗降频测试 (Concurrency Stability)
+          </h3>
+        </div>
+        <p class="text-xs text-muted-foreground leading-relaxed pl-10">
+          <strong>工具推荐：</strong>GitHub Release 大文件下载 或 Telegram 发起 10 分钟语音通话。
+        </p>
+        <div class="ml-10 p-4 rounded-lg bg-muted text-xs text-foreground leading-relaxed space-y-2">
+          <p><strong>执行方法与判断：</strong></p>
+          <p class="text-muted-foreground">
+            劣质中转机场常在持续下载超过 1GB 后对当前 TCP 链接进行主动断开或限速（Drop Connection）。开启大文件下载观察速度曲线：优质专线速度曲线应呈现为一条水平直线，无断崖式跌落；通话过程中无机械音或声画脱节现象。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Pass/Fail Checklist -->
+    <section class="prose-section mb-14 space-y-4">
+      <h2 class="section-title">03. 极限压测验收结果对照表</h2>
+      <div class="overflow-x-auto my-6 border border-border rounded-xl">
+        <table class="w-full text-left text-xs text-muted-foreground border-collapse">
+          <thead>
+            <tr class="bg-muted text-foreground border-b border-border">
+              <th class="p-3 font-semibold">压测核心维度</th>
+              <th class="p-3 font-semibold text-primary">优秀标杆标准 (可长期续费)</th>
+              <th class="p-3 font-semibold text-destructive">红线不合格 (建议立即退款)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border">
+            <tr>
+              <td class="p-3 font-medium text-foreground">晚高峰 MTR 连续丢包</td>
+              <td class="p-3 font-mono">&lt; 1% (稳定如直线)</td>
+              <td class="p-3 font-mono">&gt; 5% (频繁超时中断)</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-medium text-foreground">YouTube 4K 连接速度</td>
+              <td class="p-3 font-mono">&gt; 120,000 Kbps</td>
+              <td class="p-3 font-mono">&lt; 25,000 Kbps (无法流畅播放)</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-medium text-foreground">缓冲健康度 (Buffer)</td>
+              <td class="p-3 font-mono">&gt; 35 秒以上持续充裕</td>
+              <td class="p-3 font-mono">&lt; 5 秒并频繁见底旋转</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-medium text-foreground">大模型 AI 访问状态</td>
+              <td class="p-3">ChatGPT / Claude 秒开无验证</td>
+              <td class="p-3">无限循环 Cloudflare 验证盾或 403 封锁</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-medium text-foreground">UDP 协议转发</td>
+              <td class="p-3">完美支持，电报通话与游戏联机畅通</td>
+              <td class="p-3">全量阻断，通话一直处于 Connecting</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Spotlight Banner -->
+    <section class="mb-14">
+      <div class="p-8 rounded-2xl border border-primary/40 bg-card space-y-6">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <span class="px-2.5 py-1 rounded text-xs font-bold bg-primary/10 text-primary uppercase tracking-wide">满分压测标杆</span>
+            <h3 class="text-xl font-bold text-foreground mt-2">经受住严苛考验的专线王者：光速云</h3>
+          </div>
+          <a
+            href={guangsu.affLink}
+            target="_blank"
+            rel="nofollow sponsored noopener"
+            class="cta-btn cta-primary whitespace-nowrap"
+          >
+            直达光速云 (享专属优惠)
+          </a>
+        </div>
+        <p class="text-xs text-muted-foreground leading-relaxed">
+          在历次晚高峰实验室压力测试中，光速云凭借深港顶级 IEPL 企业物理专线通道，取得了 100 次 Ping 0 丢包、YouTube 4K 180,000 Kbps 瞬时吞吐、ChatGPT-4o 与 Claude 3.5 Sonnet 零风控拦截的优异表现。轻量版年付仅 99 元（折合 8.25 元/月），且附带 24 小时无理由退款兜底，是压测防翻车的安心之选。
+        </p>
+      </div>
+    </section>
+  </article>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--primary);
+  }
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .page-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--foreground);
+    margin-bottom: 0.75rem;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1.25rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: opacity 0.15s ease-in-out;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  .cta-primary:hover {
+    opacity: 0.9;
+  }
+</style>

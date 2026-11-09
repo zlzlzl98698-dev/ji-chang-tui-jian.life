@@ -1,0 +1,113 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { blacklistAirports } from "../../data/topics/warningData";
+import { airports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const guangsu = airports.find((a) => a.slug === "guangsu") || airports[0];
+---
+
+<MarketingLayout
+  title="2024-2026 跑路失联机场黑名单实录与暴雷案例库 | 机场life"
+  description="全网最全的翻墙机场跑路黑名单血泪档案：深度记录极客云、星空云、微光加速等倒闭失联机场的圈钱作案手段、涉案规模与受害者维权经验。"
+  locale={locale}
+  path="/warning/blacklist"
+>
+  <article class="container py-12 max-w-5xl mx-auto">
+    <nav class="breadcrumb mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">首页</a></li>
+        <li><span>/</span></li>
+        <li><a href="/warning" class="hover:text-primary transition-colors">跑路预警</a></li>
+        <li><span>/</span></li>
+        <li class="text-foreground font-medium" aria-current="page">暴雷黑名单库</li>
+      </ol>
+    </nav>
+
+    <header class="page-head max-w-4xl mb-12">
+      <div class="inline-badge mb-3">黑名单档案库 · 避坑血泪史</div>
+      <h1 class="page-title mb-4">2024-2026 跑路失联机场黑名单实录</h1>
+      <p class="page-lead">
+        这里记录了近年来在出海网络圈中以恶意吸筹、虚假宣传、关站换皮等手段造成大量用户资金损失的倒闭机场全景档案。
+      </p>
+    </header>
+
+    <div class="space-y-6 mb-16">
+      {blacklistAirports.map((item) => (
+        <div class="p-6 rounded-xl border border-destructive/30 bg-card space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <h2 class="text-lg font-bold text-foreground flex items-center gap-2">
+              <span class="text-destructive">🚫</span> {item.name}
+            </h2>
+            <span class="px-2 py-0.5 rounded text-xs bg-destructive/10 text-destructive font-bold self-start sm:self-auto">
+              {item.scamType}
+            </span>
+          </div>
+          <p class="text-sm text-muted-foreground leading-relaxed">{item.postMortem}</p>
+          <div class="p-3 rounded-lg bg-muted text-xs space-y-1">
+            <div><strong>⚠️ 暴雷前兆信号：</strong> {item.runSignals.join("；")}</div>
+            <div class="text-muted-foreground">
+              存活时长：{item.establishedSpan} · 暴雷时间：{item.runDate} · 涉及受害人：{item.estimatedVictims}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Spotlight -->
+    <div class="p-6 rounded-2xl border border-primary/40 bg-card flex flex-col md:flex-row items-center justify-between gap-6">
+      <div>
+        <h3 class="font-bold text-foreground mb-1">避开黑心小作坊，认准老牌合规专线</h3>
+        <p class="text-xs text-muted-foreground">光速云建站稳定，深港 IEPL 内网专线，年付仅需 99 元，支持 24 小时体验保障。</p>
+      </div>
+      <a
+        href={guangsu.affLink}
+        target="_blank"
+        rel="nofollow sponsored noopener"
+        class="cta-btn cta-primary whitespace-nowrap"
+      >
+        直达光速云 (享专属优惠)
+      </a>
+    </div>
+  </article>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--primary);
+  }
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .page-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+</style>

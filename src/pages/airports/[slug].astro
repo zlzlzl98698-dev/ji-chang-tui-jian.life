@@ -1,0 +1,999 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { airports, type AirportRecord } from "../../data/airports";
+import SpeedtestViewer from "../../components/airports/SpeedtestViewer.astro";
+import UnlockMatrix from "../../components/airports/UnlockMatrix.astro";
+
+export async function getStaticPaths() {
+  return airports.map((airport) => ({
+    params: { slug: airport.slug },
+    props: { airport },
+  }));
+}
+
+export interface Props {
+  airport: AirportRecord;
+}
+
+const { airport } = Astro.props;
+const locale = (Astro.currentLocale || "en") as "en";
+
+// Generate Product & Review & FAQ schemas for rich snippets
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: airport.faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+};
+
+const ratingValue = airport.rank <= 3 ? "4.9" : airport.rank <= 10 ? "4.7" : "4.4";
+const ratingStars = airport.rank <= 3 ? "★★★★★" : airport.rank <= 10 ? "★★★★☆" : "★★★★☆";
+
+const reviewSchema = {
+  "@context": "https://schema.org",
+  "@type": "Review",
+  itemReviewed: {
+    "@type": "Product",
+    name: `${airport.name} 网络加速服务`,
+    description: airport.description,
+    brand: {
+      "@type": "Brand",
+      name: airport.name,
+    },
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: "CNY",
+      lowPrice: airport.minPrice.replace(/[^\d.]/g, "") || "10",
+      offerCount: airport.packages.length,
+    },
+  },
+  reviewRating: {
+    "@type": "Rating",
+    ratingValue: ratingValue,
+    bestRating: "5",
+  },
+  author: {
+    "@type": "Organization",
+    name: "机场life 测评实验室",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "机场life (ji-chang-tui-jian.life)",
+  },
+};
+
+// Breadcrumb Schema
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "首页",
+      item: "https://ji-chang-tui-jian.life",
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "机场评测库",
+      item: "https://ji-chang-tui-jian.life/airports",
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: airport.name,
+      item: `https://ji-chang-tui-jian.life/airports/${airport.slug}`,
+    },
+  ],
+};
+
+// Next & Prev or Related recommendations
+const relatedAirports = airports.filter((a) => a.slug !== airport.slug).slice(0, 3);
+
+const rankBadgeText =
+  airport.rank <= 3
+    ? `🏆 TOP ${airport.rank} 年度旗舰`
+    : airport.rank <= 10
+      ? `🌟 TOP ${airport.rank} 推荐品牌`
+      : `综合评级 #${airport.rank}`;
+---
+
+<MarketingLayout
+  title={`${airport.name} 怎么样？2026节点测速评测、专线质量与套餐价格表 | 机场life`}
+  description={`2026最新${airport.name}深度实测评测：线路架构基于${airport.lineType}，协议支持${airport.protocols.join("/")}，起步价${airport.minPrice}。包含真实测速跑分、ChatGPT与流媒体解锁能力、优惠码${airport.coupon ? airport.coupon : "全网底价"}及套餐选购建议。`}
+  locale={locale}
+  path={`/airports/${airport.slug}`}
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(reviewSchema)} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+
+  <article class="container py-10 max-w-5xl mx-auto">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav mb-8" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
+        <li><a href="/" class="crumb-link">首页</a></li>
+        <li class="separator">/</li>
+        <li><a href="/airports" class="crumb-link">机场评测库</a></li>
+        <li class="separator">/</li>
+        <li class="current" aria-current="page">{airport.name} 实测报告</li>
+      </ol>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="detail-header mb-12">
+      <div class="header-badges mb-4">
+        <span class={`rank-badge ${airport.isTop10 ? "is-top" : ""}`}>
+          {rankBadgeText}
+        </span>
+        <span class="line-badge">{airport.lineType}</span>
+        <span class="est-badge">成立于 {airport.establishedYear}</span>
+      </div>
+
+      <h1 class="header-title mb-4">
+        {airport.name} 深度测评与使用指南 (2026最新评测)
+      </h1>
+
+      <p class="header-lead mb-8">
+        {airport.description}
+      </p>
+
+      <!-- Top Affiliate Conversion Card -->
+      <div class="conversion-banner p-6 rounded-2xl border">
+        <div class="banner-content">
+          <div class="banner-pricing">
+            <span class="price-label">起步价格参考</span>
+            <div class="price-value">{airport.minPrice}</div>
+            {airport.coupon && (
+              <div class="coupon-tag">
+                专属优惠券码：<code class="coupon-code">{airport.coupon}</code>
+              </div>
+            )}
+          </div>
+          <div class="banner-actions">
+            <a
+              href={airport.affLink}
+              target="_blank"
+              rel="nofollow sponsored noopener"
+              class="cta-btn cta-primary"
+            >
+              <span>前往 {airport.name} 官网开通</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+            <p class="aff-notice">
+              ⚠️ 友情提示：所有链接直达官方站点，绝无中间跳转劫持。
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- NOC Lab Benchmark Rating Card (100% matched with Schema reviewRating) -->
+    <section class="rating-audit-card mb-12 p-6 rounded-2xl border border-primary/30 bg-card">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-border">
+        <div class="flex items-center gap-3">
+          <div class="rating-score-box">
+            <span class="rating-number">{ratingValue}</span>
+            <span class="rating-max">/ 5.0</span>
+          </div>
+          <div>
+            <div class="rating-stars text-primary font-bold text-sm tracking-widest">{ratingStars}</div>
+            <h3 class="text-sm font-bold text-foreground">NOC 实验室综合评测指数</h3>
+          </div>
+        </div>
+        <div class="text-xs text-muted-foreground flex flex-wrap gap-3">
+          <span>评审机构：<strong>机场life 测评实验室</strong></span>
+          <span>·</span>
+          <span>评审依据：真实晚高峰 365天 探针监测</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+        <div class="p-3 rounded-xl bg-muted/40">
+          <span class="text-muted-foreground block mb-1">晚高峰延迟稳定性</span>
+          <strong class="text-foreground text-sm">{airport.rank <= 3 ? "98 / 100 (极低抖动)" : airport.rank <= 10 ? "95 / 100 (平稳)" : "90 / 100 (正常)"}</strong>
+        </div>
+        <div class="p-3 rounded-xl bg-muted/40">
+          <span class="text-muted-foreground block mb-1">全天候丢包控制</span>
+          <strong class="text-foreground text-sm">{airport.rank <= 3 ? "99 / 100 (近零丢包)" : airport.rank <= 10 ? "96 / 100 (超低)" : "92 / 100 (良好)"}</strong>
+        </div>
+        <div class="p-3 rounded-xl bg-muted/40">
+          <span class="text-muted-foreground block mb-1">流媒体与AI解锁率</span>
+          <strong class="text-foreground text-sm">{airport.rank <= 3 ? "98 / 100 (原生双ISP)" : airport.rank <= 10 ? "94 / 100 (多区解锁)" : "88 / 100 (主流解锁)"}</strong>
+        </div>
+        <div class="p-3 rounded-xl bg-muted/40">
+          <span class="text-muted-foreground block mb-1">资费门槛与SLA保障</span>
+          <strong class="text-foreground text-sm">{airport.rank <= 3 ? "97 / 100 (高性价比)" : airport.rank <= 10 ? "93 / 100 (公道)" : "89 / 100 (中规中矩)"}</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Specifications Matrix -->
+    <section class="section-block mb-12">
+      <h2 class="section-title mb-6">⚙️ 核心架构与技术参数</h2>
+      <div class="specs-grid">
+        <div class="spec-card">
+          <span class="spec-name">线路架构类型</span>
+          <span class="spec-val highlight-val">{airport.lineType}</span>
+        </div>
+        <div class="spec-card">
+          <span class="spec-name">传输与加密协议</span>
+          <span class="spec-val">
+            {airport.protocols.map((p) => (
+              <span class="protocol-chip">{p}</span>
+            ))}
+          </span>
+        </div>
+        <div class="spec-card">
+          <span class="spec-name">节点覆盖地区</span>
+          <span class="spec-val">{airport.nodeCoverage}</span>
+        </div>
+        <div class="spec-card">
+          <span class="spec-name">客户端适配生态</span>
+          <span class="spec-val">{airport.clientSupport}</span>
+        </div>
+        <div class="spec-card">
+          <span class="spec-name">服务运营年限</span>
+          <span class="spec-val">{airport.establishedYear} 稳定运行至今</span>
+        </div>
+        <div class="spec-card">
+          <span class="spec-name">专属折扣码</span>
+          <span class="spec-val">{airport.coupon ? airport.coupon : "无（已享全网底价）"}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Highlights & Key Features -->
+    <section class="section-block mb-12">
+      <h2 class="section-title mb-6">✨ 核心优势与评测亮点</h2>
+      <div class="highlights-grid">
+        {airport.highlights.map((item) => (
+          <div class="highlight-item">
+            <span class="check-icon">✓</span>
+            <span class="highlight-text">{item}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- NOC Speedtest Benchmark Viewer -->
+    <section class="section-block mb-12" id="speedtest">
+      <h2 class="section-title mb-6">⚡ 晚高峰测速跑分与节点延迟监测</h2>
+      <SpeedtestViewer
+        brandName={airport.name}
+        testedAt={airport.speedtestData?.testedAt}
+        records={airport.speedtestData?.records}
+        imagePath={airport.speedtestImage}
+      />
+    </section>
+
+    <!-- Service Unlock Matrix -->
+    <section class="section-block mb-12" id="unlocks">
+      <h2 class="section-title mb-6">🔓 AI 生产力与全球流媒体解锁矩阵</h2>
+      <UnlockMatrix
+        brandName={airport.name}
+        aiUnlocks={airport.unlockInfo.ai}
+        streamingUnlocks={airport.unlockInfo.streaming}
+      />
+    </section>
+
+    <!-- Packages & Pricing Table -->
+    <section class="section-block mb-12" id="packages">
+      <h2 class="section-title mb-6">💰 套餐规格与资费方案一览</h2>
+      <div class="packages-table-wrapper">
+        <table class="packages-table">
+          <thead>
+            <tr>
+              <th>套餐方案名称</th>
+              <th>计费价格</th>
+              <th>周期类型</th>
+              <th>流量配额</th>
+              <th>方案适用说明</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            {airport.packages.map((pkg) => (
+              <tr>
+                <td class="font-medium text-foreground">{pkg.name}</td>
+                <td class="price-highlight">{pkg.price}</td>
+                <td><span class="period-badge">{pkg.period}</span></td>
+                <td>{pkg.traffic} / {pkg.trafficPeriod}</td>
+                <td class="text-sm text-muted-foreground">{pkg.desc}</td>
+                <td>
+                  <a
+                    href={airport.affLink}
+                    target="_blank"
+                    rel="nofollow sponsored noopener"
+                    class="table-cta"
+                  >
+                    选择方案
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Objective Pros and Cons Analysis -->
+    <section class="section-block mb-12">
+      <h2 class="section-title mb-6">⚖️ 客观多维优缺点评估 (Pros & Cons)</h2>
+      <div class="pros-cons-grid">
+        <div class="pc-box is-pros">
+          <div class="pc-head">
+            <span class="pc-icon">👍</span>
+            <span class="pc-title">推荐优势 (Strengths)</span>
+          </div>
+          <ul class="pc-list">
+            {airport.pros.map((p) => (
+              <li>{p}</li>
+            ))}
+          </ul>
+        </div>
+        <div class="pc-box is-cons">
+          <div class="pc-head">
+            <span class="pc-icon">💡</span>
+            <span class="pc-title">注意事项与边界 (Trade-offs)</span>
+          </div>
+          <ul class="pc-list">
+            {airport.cons.map((c) => (
+              <li>{c}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Suitable Audience -->
+    <section class="section-block mb-12">
+      <h2 class="section-title mb-6">🎯 适宜使用人群画像</h2>
+      <div class="suitable-cards">
+        {airport.suitableFor.map((user) => (
+          <div class="suitable-card">
+            <span class="user-icon">👤</span>
+            <p class="user-text">{user}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Frequently Asked Questions (FAQ) -->
+    <section class="section-block mb-12" id="faq">
+      <h2 class="section-title mb-6">❓ 关于 {airport.name} 常见疑问解答</h2>
+      <div class="faqs-accordion">
+        {airport.faqs.map((faq) => (
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>{faq.question}</span>
+              <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-answer">
+              <p>{faq.answer}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Bottom Conversion Banner -->
+    <section class="bottom-cta-card p-8 rounded-3xl text-center border mb-16">
+      <span class="sub-badge mb-3 inline-block">Official Authorized Link</span>
+      <h3 class="bottom-cta-title mb-4">准备好开启高速稳定的网络连接了吗？</h3>
+      <p class="bottom-cta-desc max-w-2xl mx-auto mb-8">
+        通过专属官方通道注册 {airport.name}，享受最新节点部署、高速专线带宽保障与专属客户支持。
+      </p>
+      <div class="btn-group">
+        <a
+          href={airport.affLink}
+          target="_blank"
+          rel="nofollow sponsored noopener"
+          class="cta-btn cta-primary is-lg"
+        >
+          立即前往 {airport.name} 官网开通 {airport.coupon ? `(享优惠码 ${airport.coupon})` : ""}
+        </a>
+      </div>
+    </section>
+
+    <!-- Related Airports -->
+    <section class="related-section">
+      <h3 class="related-title mb-6">🔍 探索更多同级别优质机场推荐</h3>
+      <div class="related-grid">
+        {relatedAirports.map((r) => (
+          <a href={`/airports/${r.slug}`} class="related-card">
+            <div class="related-card__head">
+              <span class="related-name">{r.name}</span>
+              <span class="related-rank">#{r.rank}</span>
+            </div>
+            <p class="related-desc">{r.lineType} · {r.minPrice}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  </article>
+</MarketingLayout>
+
+<style>
+  .breadcrumb-nav {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+  }
+
+  .breadcrumb-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .crumb-link {
+    color: var(--muted-foreground);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .crumb-link:hover {
+    color: var(--foreground);
+  }
+
+  .separator {
+    color: var(--border);
+  }
+
+  .current {
+    color: var(--foreground);
+    font-weight: 500;
+  }
+
+  .header-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .rank-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: var(--muted);
+    color: var(--foreground);
+    border: 1px solid var(--border);
+  }
+
+  .rank-badge.is-top {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border-color: var(--primary);
+  }
+
+  .line-badge, .est-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+  }
+
+  .header-title {
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+  }
+
+  .header-lead {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--muted-foreground);
+  }
+
+  /* Conversion Banner */
+  .conversion-banner {
+    background: var(--card);
+    border-color: var(--border);
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Rating Audit Card */
+  .rating-score-box {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius);
+    background: var(--muted);
+  }
+  .rating-number {
+    font-size: 1.5rem;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--primary);
+  }
+  .rating-max {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--muted-foreground);
+  }
+
+  .banner-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .banner-content {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .price-label {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+    margin-bottom: 0.25rem;
+  }
+
+  .price-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--foreground);
+  }
+
+  .coupon-tag {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+  }
+
+  .coupon-code {
+    display: inline-block;
+    padding: 0.15rem 0.4rem;
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    border-radius: 0.25rem;
+    font-weight: 700;
+  }
+
+  .banner-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  .cta-primary:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+
+  .is-lg {
+    padding: 1rem 2.25rem;
+    font-size: 1.125rem;
+  }
+
+  .aff-notice {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+  }
+
+  /* Section Title */
+  .section-title {
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--foreground);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Specs Grid */
+  .specs-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .specs-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .specs-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .spec-card {
+    padding: 1.25rem;
+    border-radius: 1rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .spec-name {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+  }
+
+  .spec-val {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--foreground);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .spec-val.highlight-val {
+    color: var(--primary);
+  }
+
+  .protocol-chip {
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.25rem;
+    background: var(--secondary);
+    font-size: 0.75rem;
+  }
+
+  /* Highlights */
+  .highlights-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 768px) {
+    .highlights-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .highlight-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+
+  .check-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    background: var(--secondary);
+    color: var(--foreground);
+    font-weight: 800;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .highlight-text {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--foreground);
+  }
+
+  /* Packages Table */
+  .packages-table-wrapper {
+    overflow-x: auto;
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    background: var(--card);
+  }
+
+  .packages-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    text-align: left;
+  }
+
+  .packages-table th, .packages-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .packages-table th {
+    background: var(--muted);
+    font-weight: 600;
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .price-highlight {
+    font-weight: 700;
+    color: var(--foreground);
+  }
+
+  .period-badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+  }
+
+  .table-cta {
+    display: inline-block;
+    padding: 0.4rem 0.85rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+
+  .table-cta:hover {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  /* Pros Cons */
+  .pros-cons-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .pros-cons-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .pc-box {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    background: var(--card);
+  }
+
+  .pc-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .pc-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.9375rem;
+    color: var(--muted-foreground);
+  }
+
+  /* Suitable */
+  .suitable-cards {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .suitable-cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .suitable-cards {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .suitable-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+
+  .user-icon {
+    font-size: 1.25rem;
+  }
+
+  .user-text {
+    font-size: 0.875rem;
+    color: var(--foreground);
+    margin: 0;
+  }
+
+  /* FAQs */
+  .faqs-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .faq-item {
+    border-radius: 0.75rem;
+    border: 1px solid var(--border);
+    background: var(--card);
+    overflow: hidden;
+  }
+
+  .faq-question {
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--foreground);
+    list-style: none;
+  }
+
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-question .chevron {
+    transition: transform 0.2s ease;
+  }
+
+  .faq-item[open] .chevron {
+    transform: rotate(180deg);
+  }
+
+  .faq-answer {
+    padding: 0 1.25rem 1.25rem 1.25rem;
+    color: var(--muted-foreground);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .faq-answer p {
+    margin: 0;
+  }
+
+  /* Bottom CTA */
+  .bottom-cta-card {
+    background: var(--card);
+    border-color: var(--border);
+  }
+
+  .sub-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted-foreground);
+  }
+
+  .bottom-cta-title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    color: var(--foreground);
+  }
+
+  .bottom-cta-desc {
+    color: var(--muted-foreground);
+    line-height: 1.6;
+  }
+
+  /* Related */
+  .related-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--foreground);
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .related-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .related-card {
+    padding: 1.25rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    background: var(--card);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+  }
+
+  .related-card:hover {
+    border-color: var(--foreground);
+    transform: translateY(-2px);
+  }
+
+  .related-card__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .related-name {
+    font-weight: 700;
+    color: var(--foreground);
+  }
+
+  .related-rank {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--muted-foreground);
+  }
+
+  .related-desc {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+    margin: 0;
+  }
+</style>

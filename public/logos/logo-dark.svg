@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="40" viewBox="0 0 160 40" fill="none">
+  <rect width="36" height="36" x="2" y="2" rx="8" fill="#38bdf8"/>
+  <path d="M10 20L28 12L21 29L17.5 21.5L10 20Z" fill="#0f172a" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round"/>
+  <text x="48" y="26" fill="#f8fafc" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="18" letter-spacing="-0.02em">机场推荐</text>
+</svg>

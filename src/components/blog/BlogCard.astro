@@ -23,18 +23,19 @@ const {
 } = Astro.props as Props;
 const Heading = headingLevel;
 const publishDate = new Date(post.data.publishDate);
-const readingTime = Math.max(
-  1,
-  Math.ceil((post.body ?? "").trim().split(/\s+/).filter(Boolean).length / 200),
-);
+const rawBody = (post.body ?? "").trim();
+const charCount = rawBody.length;
+const wordCount = rawBody.split(/\s+/).filter(Boolean).length;
+const readingTime = Math.max(1, Math.ceil(Math.max(wordCount, charCount / 3) / 180));
+
 const excerpt =
   post.data.description.length > 180
     ? `${post.data.description.slice(0, 177)}...`
     : post.data.description;
 const href = resolveRoute(locale, `/blog/${post.id}`);
-const dateLabel = publishDate.toLocaleDateString("en-US", {
+const dateLabel = publishDate.toLocaleDateString("zh-CN", {
   year: "numeric",
-  month: "short",
+  month: "long",
   day: "numeric",
 });
 ---
@@ -44,7 +45,7 @@ const dateLabel = publishDate.toLocaleDateString("en-US", {
     <BlogImageSVG slug={post.data.svgSlug ?? post.id} title={post.data.title} />
   </a>
   <div class="blog-card__body">
-    {variant === "list" && <span class="blog-card__kicker">Featured</span>}
+    {variant === "list" && <span class="blog-card__kicker">精选推荐</span>}
     <p class="blog-card__meta">
       <time datetime={publishDate.toISOString()}>{dateLabel}</time>
       <span class="blog-card__dot" aria-hidden="true">&middot;</span>

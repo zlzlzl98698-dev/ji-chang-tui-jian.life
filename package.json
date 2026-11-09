@@ -1,8 +1,8 @@
 {
-  "name": "astro-cloudflare",
+  "name": "ji-chang-tui-jian",
   "version": "1.0.0",
   "private": true,
-  "description": "Multilingual marketing + blog + docs starter with Astro and Cloudflare Pages",
+  "description": "机场推荐 (ji-chang-tui-jian.life) - 专注优质稳定网络加速与节点订阅测评指南",
   "license": "MIT",
   "packageManager": "pnpm@8.15.0",
   "type": "module",

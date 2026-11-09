@@ -1,0 +1,117 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { comprehensiveFaqs } from "../../data/topics/faqData";
+import { airports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const faqs = comprehensiveFaqs.filter((f) => f.category === "clients");
+const guangsu = airports.find((a) => a.slug === "guangsu") || airports[0];
+---
+
+<MarketingLayout
+  title="客户端常见报错与系统排障 FAQ (2026最新) | 机场life"
+  description="深度解答Clash Verge Rev、Sing-box、Shadowrocket报错排障：系统代理无法上网、TUN虚拟网卡驱动安装失败、端口冲突与iOS客户端选购对比。"
+  locale={locale}
+  path="/faq/clients"
+>
+  <article class="container py-12 max-w-5xl mx-auto">
+    <nav class="breadcrumb mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">首页</a></li>
+        <li><span>/</span></li>
+        <li><a href="/faq" class="hover:text-primary transition-colors">机场FAQ</a></li>
+        <li><span>/</span></li>
+        <li class="text-foreground font-medium" aria-current="page">客户端排障</li>
+      </ol>
+    </nav>
+
+    <header class="page-head max-w-4xl mb-12">
+      <div class="inline-badge mb-3">FAQ 细分专题 · 客户端故障</div>
+      <h1 class="page-title mb-4">客户端常见报错与系统网络栈排障</h1>
+      <p class="page-lead">
+        导入订阅显示成功但就是打不开网页？TUN 模式无法启动？本专栏整理了 Windows、macOS、iOS、Android 跨平台客户端的典型报错与标准解决方案。
+      </p>
+    </header>
+
+    <div class="space-y-6 mb-16">
+      {faqs.map((item) => (
+        <div class="p-6 rounded-xl border border-border bg-card space-y-4">
+          <h2 class="text-lg font-bold text-foreground">❓ {item.question}</h2>
+          <div class="p-3 rounded-lg bg-muted text-xs text-foreground font-medium">
+            <strong>核心简答：</strong> {item.shortAnswer}
+          </div>
+          <p class="text-sm text-muted-foreground leading-relaxed">{item.fullAnswer}</p>
+          {item.actionSteps && (
+            <div class="p-4 rounded-lg border border-border bg-card/60 text-xs text-muted-foreground space-y-1">
+              <strong class="text-foreground block mb-1">🛠️ 排障 SOP：</strong>
+              <ul class="list-disc list-inside space-y-1">
+                {item.actionSteps.map((s) => (<li>{s}</li>))}
+              </ul>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+
+    <!-- Spotlight -->
+    <div class="p-6 rounded-2xl border border-primary/40 bg-card flex flex-col md:flex-row items-center justify-between gap-6">
+      <div>
+        <h3 class="font-bold text-foreground mb-1">需要客户端完整图文下载与安装指南？</h3>
+        <p class="text-xs text-muted-foreground">欢迎查阅我们的全平台客户端专栏，或者一键配置光速云企业专线订阅，畅享极速出海体验。</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="/clients" class="cta-btn cta-secondary whitespace-nowrap">
+          客户端大全 →
+        </a>
+        <a
+          href={guangsu.affLink}
+          target="_blank"
+          rel="nofollow sponsored noopener"
+          class="cta-btn cta-primary whitespace-nowrap"
+        >
+          直达光速云 (优惠码 AMM)
+        </a>
+      </div>
+    </div>
+  </article>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--primary);
+  }
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .page-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+</style>

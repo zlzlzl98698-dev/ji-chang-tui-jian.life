@@ -1,0 +1,382 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { airports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const guangsu = airports.find((a) => a.slug === "guangsu") || airports[0];
+---
+
+<MarketingLayout
+  title="Clash / Sing-box 免费订阅一键导入与订阅转换进阶指南 (2026最新) | 机场life"
+  description="2026年免费节点一键导入Clash Verge Rev、Sing-box与Shadowrocket实战教程。深度解析Subconverter转换参数、ACL4SSR与Loyalsoldier分流规则对比、TUN虚拟网卡防DNS泄漏配置与故障排错。"
+  locale={locale}
+  path="/free-nodes/clash"
+>
+  <article class="container py-12 max-w-5xl mx-auto">
+    <nav class="breadcrumb mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">首页</a></li>
+        <li><span>/</span></li>
+        <li><a href="/free-nodes" class="hover:text-primary transition-colors">免费节点专题</a></li>
+        <li><span>/</span></li>
+        <li class="text-foreground font-medium" aria-current="page">Clash/Sing-box 导入</li>
+      </ol>
+    </nav>
+
+    <header class="page-head max-w-4xl mb-12">
+      <div class="inline-badge mb-3">客户端实战 · 订阅转换与内核分流</div>
+      <h1 class="page-title mb-4">Clash / Sing-box 免费订阅一键导入与订阅转换进阶指南</h1>
+      <p class="page-lead">
+        免费单节点链接格式杂乱、失效频发且无法直接触发分流？本篇指南系统梳理如何利用现代订阅转换工具，将分散的 vless://、ss://、vmess:// 链接快速加工为符合 Clash Verge Rev 与 Sing-box 规范的托管配置，并深入解析 TUN 模式防 DNS 泄漏与高频报错排查。
+      </p>
+    </header>
+
+    <!-- Quick Takeaways / Answer First -->
+    <div class="p-6 rounded-2xl border border-border bg-card mb-12 space-y-4">
+      <h2 class="text-lg font-bold text-foreground flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span>
+        核心实操要点速览 (Answer-First)
+      </h2>
+      <ul class="text-xs text-muted-foreground space-y-2 leading-relaxed">
+        <li>&bull; <strong>格式转化本质：</strong>单节点协议串（如 <code>vless://...</code>）仅包含节点握手元数据，必须经由 Subconverter 将其包装为包含 <code>proxies</code>、<code>proxy-groups</code> 与 <code>rules</code> 的完整 YAML/JSON 配置文件。</li>
+        <li>&bull; <strong>规则集选择建议：</strong>日常轻量翻墙推荐选用 <code>ACL4SSR_Online_Mini</code>，兼顾分流速度与国内直连；深度科研、海外开发者推荐选用 <code>Loyalsoldier</code> 规则集以规避 AI 平台误分流。</li>
+        <li>&bull; <strong>TUN 模式关键避坑：</strong>Clash Verge Rev 开启 TUN 模式前必须以管理员权限安装 <strong>Service Mode</strong>，并严格启用 <code>fake-ip-filter</code> 排除国内核心网段，防止 Windows 局域网打印机与企业内网瘫痪。</li>
+      </ul>
+    </div>
+
+    <!-- Section 1 -->
+    <section class="prose-section mb-14 space-y-4">
+      <h2 class="section-title">01. 免费单节点与客户端配置文件的底层差异</h2>
+      <p class="text-sm text-muted-foreground leading-relaxed">
+        很多翻墙新手在开源社区、Telegram 频道或 GitHub 抓取到一段类似 <code>vless://uuid@domain:443?...</code> 的纯文本后，直接粘贴至 Clash 中往往会提示“配置文件解析失败”或“Invalid Config”。
+      </p>
+      <p class="text-sm text-muted-foreground leading-relaxed">
+        这是因为单节点 URI 协议本质上只是一张“门禁卡”，而现代图形化代理软件（如 Clash Verge Rev、Mihomo Party、Sing-box、Surge）要求的是整套“交通管制系统”：
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+        <div class="p-5 rounded-xl border border-border bg-card">
+          <h3 class="font-bold text-sm text-foreground mb-2">1. 节点底层定义 (Proxies)</h3>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            解析服务器域名、对外端口、传输协议（TCP/gRPC/WebSocket）、TLS 证书校验模式以及 Reality 公钥配置。
+          </p>
+        </div>
+        <div class="p-5 rounded-xl border border-border bg-card">
+          <h3 class="font-bold text-sm text-foreground mb-2">2. 代理分组逻辑 (Proxy Groups)</h3>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            构建节点选择器（Select）、自动测速故障转移（URL-Test / Fallback）及负载均衡组，决定访问哪个地区走哪个出站节点。
+          </p>
+        </div>
+        <div class="p-5 rounded-xl border border-border bg-card">
+          <h3 class="font-bold text-sm text-foreground mb-2">3. 路由分流引擎 (Rules Engine)</h3>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            基于 GeoIP、GeoSite 与域名关键字，精准把控哪些流量走国内直连（DIRECT）、哪些流量走代理，以及哪些广告域名直接拒绝（REJECT）。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2 -->
+    <section class="prose-section mb-14 space-y-4">
+      <h2 class="section-title">02. Subconverter 高阶参数详解与转换构造</h2>
+      <p class="text-sm text-muted-foreground leading-relaxed">
+        Subconverter 是目前生态中应用最广泛的跨平台订阅转换内核。通过构造 URL 请求参数，可以精确控制输出配置的每一个行为特性：
+      </p>
+      <div class="overflow-x-auto my-6 border border-border rounded-xl">
+        <table class="w-full text-left text-xs text-muted-foreground border-collapse">
+          <thead>
+            <tr class="bg-muted text-foreground border-b border-border">
+              <th class="p-3 font-semibold">URL 请求参数</th>
+              <th class="p-3 font-semibold">推荐赋值</th>
+              <th class="p-3 font-semibold">技术作用与避坑说明</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border">
+            <tr>
+              <td class="p-3 font-mono text-primary font-bold">target</td>
+              <td class="p-3 font-mono">clash / singbox</td>
+              <td class="p-3">目标生成类型。Clash 体系选 <code>clash</code>，Sing-box 体系选 <code>singbox</code>。</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-primary font-bold">url</td>
+              <td class="p-3 font-mono">URLEncode 后的链接</td>
+              <td class="p-3">多个节点或订阅源使用竖线 <code>|</code> 拼接，传入前务必进行 URL 编码。</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-primary font-bold">config</td>
+              <td class="p-3 font-mono">远程规则集 URL</td>
+              <td class="p-3">指定分流规则配置模板。若不填则仅包含节点，无任何智能分流策略。</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-primary font-bold">emoji</td>
+              <td class="p-3 font-mono">true</td>
+              <td class="p-3">自动识别节点名称中的地区代码并前置国旗 Emoji（如 🇭🇰、🇯🇵、🇺🇸），提升 UI 辨识度。</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-primary font-bold">udp</td>
+              <td class="p-3 font-mono">true</td>
+              <td class="p-3">为生成的全部节点强制声明启用 UDP 转发支持，确保电报通话和网络对战联机畅通。</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-primary font-bold">scv</td>
+              <td class="p-3 font-mono">false</td>
+              <td class="p-3">跳过 TLS 证书合法性检查。免费自签名节点可设为 <code>true</code>，但商用节点务必设为 <code>false</code>。</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-primary font-bold">fdn</td>
+              <td class="p-3 font-mono">false</td>
+              <td class="p-3">是否过滤不支持的协议节点。建议设为 <code>false</code> 以免误杀新兴的 VLESS/Hysteria2 节点。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section 3 -->
+    <section class="prose-section mb-14 space-y-4">
+      <h2 class="section-title">03. 热门远程分流规则集深度横向测评</h2>
+      <p class="text-sm text-muted-foreground leading-relaxed">
+        订阅转换的核心价值在于分流规则的科学性。选择不当会导致打开国内百度慢如蜗牛，或者访问 ChatGPT 频繁触发 IP 阻断：
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
+        <div class="p-5 rounded-xl border border-border bg-card flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-bold text-sm text-foreground">ACL4SSR_Online 基础版</h3>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-primary/10 text-primary font-bold">普及度极高</span>
+            </div>
+            <p class="text-xs text-muted-foreground leading-relaxed mb-3">
+              涵盖主流国内应用与流媒体平台分流，规则维护成熟，更新频繁。
+            </p>
+            <ul class="text-[11px] text-muted-foreground space-y-1">
+              <li>&bull; 内存消耗：中等 (~45MB)</li>
+              <li>&bull; 误判几率：极低</li>
+              <li>&bull; 适用场景：办公、日常浏览与一般影音娱乐</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-xl border border-border bg-card flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-bold text-sm text-foreground">Loyalsoldier 纯净路由</h3>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-muted text-foreground font-bold">极客/开发者偏爱</span>
+            </div>
+            <p class="text-xs text-muted-foreground leading-relaxed mb-3">
+              基于 V2Ray 域名列表与 GeoIP 深度定制，去除大量臃肿的定制规则，分流执行极其干脆。
+            </p>
+            <ul class="text-[11px] text-muted-foreground space-y-1">
+              <li>&bull; 内存消耗：超低 (~15MB)</li>
+              <li>&bull; 误判几率：低</li>
+              <li>&bull; 适用场景：全平台路由器部署与开发者环境</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-xl border border-border bg-card flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-bold text-sm text-foreground">ACL4SSR 极全去广告版</h3>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-destructive/10 text-destructive font-bold">慎重开启</span>
+            </div>
+            <p class="text-xs text-muted-foreground leading-relaxed mb-3">
+              集成了数十万条广告拦截与跟踪规则，但极容易造成部分电商与视频网站加载异常或死锁。
+            </p>
+            <ul class="text-[11px] text-muted-foreground space-y-1">
+              <li>&bull; 内存消耗：极高 (&gt;120MB)</li>
+              <li>&bull; 误判几率：高</li>
+              <li>&bull; 适用场景：低频次单纯网页去广告需求</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4 -->
+    <section class="prose-section mb-14 space-y-4">
+      <h2 class="section-title">04. Clash Verge Rev 规范化导入与 TUN 模式调优 SOP</h2>
+      <p class="text-sm text-muted-foreground leading-relaxed">
+        作为目前主流且活跃维护的开源客户端，Clash Verge Rev（基于 Mihomo 内核）是导入免费转换配置的首选平台。以下为标准无缝落地流程：
+      </p>
+      <div class="space-y-4 my-6">
+        <div class="p-5 rounded-xl border border-border bg-card">
+          <h3 class="text-sm font-bold text-foreground mb-1">步骤一：导入与更新周期设定</h3>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            进入 Clash Verge Rev 界面左侧「订阅（Profiles）」&rarr; 在上方文本框粘贴订阅转换生成的链接 &rarr; 点击「保存并导入」。右键点击该订阅卡片，设置「自动更新间隔」为 <strong>120 分钟</strong>（免费节点失效率极高，保持高频刷新避免握手死链）。
+          </p>
+        </div>
+        <div class="p-5 rounded-xl border border-border bg-card">
+          <h3 class="text-sm font-bold text-foreground mb-1">步骤二：安装内核服务并启用 TUN 虚拟网卡模式</h3>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            普通系统代理（System Proxy）只能劫持支持 HTTP 代理的浏览器流量，终端命令行、Git、Steam 以及各类游戏客户端流量会被直接放行造成直连暴露。进入「设置（Settings）」&rarr;「服务模式（Service Mode）」点击安装内核服务。成功变为绿色已安装状态后，在主界面右上角开启 <strong>TUN 模式</strong>。
+          </p>
+        </div>
+        <div class="p-5 rounded-xl border border-border bg-card">
+          <h3 class="text-sm font-bold text-foreground mb-1">步骤三：DNS 泄漏与 Fake-IP 最佳实践防范</h3>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            在「配置扩展（Merge/Script）」中确认 DNS 解析模式采用 <code>fake-ip</code>。确保 <code>fake-ip-filter</code> 中包含了 <code>*.lan</code>、<code>*.local</code> 与企业内部局域网域名。国内 DNS 设置为 <code>223.5.5.5</code> / <code>119.29.29.29</code>，国外代理组 DNS 设置为 <code>https://1.1.1.1/dns-query</code>，彻底杜绝本地运营商 DNS 投毒与污染。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5 -->
+    <section class="prose-section mb-14 space-y-4">
+      <h2 class="section-title">05. 常见订阅导入与转换报错排查矩阵</h2>
+      <div class="overflow-x-auto my-6 border border-border rounded-xl">
+        <table class="w-full text-left text-xs text-muted-foreground border-collapse">
+          <thead>
+            <tr class="bg-muted text-foreground border-b border-border">
+              <th class="p-3 font-semibold">报错表现 / 提示代码</th>
+              <th class="p-3 font-semibold">触发原因诊断</th>
+              <th class="p-3 font-semibold">快速修复方案</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border">
+            <tr>
+              <td class="p-3 font-mono text-destructive font-semibold">yaml: line X: mapping values are not allowed</td>
+              <td class="p-3">订阅转换返回了 HTML 错误页面（如 502/504），而不是有效的 YAML 结构文本。</td>
+              <td class="p-3">检查 Subconverter 转换后端是否宕机，更换公共后端或使用本地 Docker 实例。</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-destructive font-semibold">dial tcp: i/o timeout (proxy unreachable)</td>
+              <td class="p-3">免费节点已经被 GFW 针对端口或 IP 进行了 SNI 阻断，或者节点已停机下线。</td>
+              <td class="p-3">在代理组中手动执行延迟测试（Ping Test），切换至带绿色低延迟毫秒数的存活节点。</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-destructive font-semibold">WinTun driver initialization failed</td>
+              <td class="p-3">Windows 杀毒软件（如 360/电脑管家）拦截了虚拟网卡驱动安装，或未安装服务模式。</td>
+              <td class="p-3">以管理员身份重新运行客户端，并在安全软件中将 Clash Verge 核心目录加入白名单。</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-destructive font-semibold">All DNS queries failed / 无法解析国内域名</td>
+              <td class="p-3">DNS 模块中的默认 Direct 域名没有可达的上游解析服务器，导致本地回路锁死。</td>
+              <td class="p-3">在通用配置中恢复 <code>nameserver</code> 为 <code>223.5.5.5</code>，并清空本地 DNS 缓存（<code>ipconfig /flushdns</code>）。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section 6 -->
+    <section class="prose-section mb-14 space-y-4">
+      <h2 class="section-title">06. 为什么公网在线转换站存在不可忽视的隐私风险？</h2>
+      <p class="text-sm text-muted-foreground leading-relaxed">
+        大多数用户习惯在搜索引擎中随便找一个“免费订阅转换”网站，把自己的订阅甚至付费订阅 URL 粘贴进去。这种操作在黑客和安全研究员眼里等同于“裸奔”：
+      </p>
+      <div class="p-5 rounded-xl border border-destructive/30 bg-destructive/5 space-y-3 my-6">
+        <h3 class="text-sm font-bold text-destructive">公网转换站潜藏的三大隐患：</h3>
+        <ul class="text-xs text-muted-foreground space-y-2 leading-relaxed">
+          <li><strong>1. 访问 Token 与节点信息全量留痕：</strong>公网转换服务器的 Nginx 日志和 Subconverter 缓存会自动记录完整的请求 Query String，运营者可以轻松提取你的全部节点密钥与节点 IP。</li>
+          <li><strong>2. 节点被静默注入肉鸡节点：</strong>恶意转换后端可在输出的 YAML 文件中悄悄加入攻击者自建的中间人节点（MITM），并配置分流规则将你的高价值流量引入其中进行解密嗅探。</li>
+          <li><strong>3. 转换服务随时因版权或滥用下架：</strong>公共免费转换站抗压能力弱，一旦遭遇 DDOS 攻击或上游规则源封锁，会导致你的客户端配置全线变红断网。</li>
+        </ul>
+      </div>
+      <p class="text-xs text-muted-foreground">
+        💡 <strong>专家级防护方案：</strong>如果使用单节点，建议自行在本地通过 Docker 运行纯离线 Subconverter 容器（<code>docker run -d -p 25500:25500 tindy2013/subconverter:latest</code>），严禁将个人核心财产与付费凭据提交给无任何法律约束的第三方网站。
+      </p>
+    </section>
+
+    <!-- Upgrading Banner & Comparison -->
+    <section class="mb-14">
+      <div class="p-8 rounded-2xl border border-primary/40 bg-card space-y-6">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <span class="px-2.5 py-1 rounded text-xs font-bold bg-primary/10 text-primary uppercase tracking-wide">省心换代方案</span>
+            <h3 class="text-xl font-bold text-foreground mt-2">告别每日重复转换：商业专线原生托管 vs 免费手动折腾</h3>
+          </div>
+          <a
+            href={guangsu.affLink}
+            target="_blank"
+            rel="nofollow sponsored noopener"
+            class="cta-btn cta-primary whitespace-nowrap"
+          >
+            体验光速云原生一键导入 (享专属优惠)
+          </a>
+        </div>
+
+        <div class="overflow-x-auto border border-border rounded-xl">
+          <table class="w-full text-left text-xs text-muted-foreground border-collapse">
+            <thead>
+              <tr class="bg-muted text-foreground border-b border-border">
+                <th class="p-3 font-semibold">对比维度</th>
+                <th class="p-3 font-semibold text-destructive">手动维护免费节点</th>
+                <th class="p-3 font-semibold text-primary">光速云商业专线托管</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              <tr>
+                <td class="p-3 font-medium text-foreground">配置下发机制</td>
+                <td class="p-3">依赖第三方公共转换站二次加工，格式易错</td>
+                <td class="p-3">官网后台一键唤起客户端全自动导入，原生支持全部内核</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-medium text-foreground">节点存活稳定性</td>
+                <td class="p-3">平均寿命 6-24 小时，需每天重新抓取替换</td>
+                <td class="p-3">SLA 99.9% 承诺，深港物理专线后端全自动故障热备转移</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-medium text-foreground">晚高峰速度与带宽</td>
+                <td class="p-3">严重 QoS 限速（&lt;5Mbps），频繁断流与重传</td>
+                <td class="p-3">最高 1000Mbps 独享物理通道，4K/8K 视频与 AI 瞬时响应</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-medium text-foreground">售后与安全保障</td>
+                <td class="p-3">无客服、无退款机制，存在中间人劫持风险</td>
+                <td class="p-3">24小时工单响应，支持 24 小时无理由全额退款保障</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </article>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--primary);
+  }
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .page-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--foreground);
+    margin-bottom: 0.75rem;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1.25rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: opacity 0.15s ease-in-out;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  .cta-primary:hover {
+    opacity: 0.9;
+  }
+</style>

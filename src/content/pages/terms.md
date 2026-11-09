@@ -2,33 +2,36 @@
 locale: en
 slug: terms
 title: Terms & Conditions
-description: Terms and conditions for using this boilerplate website.
+description: Terms and conditions for using ji-chang-tui-jian.life.
 sections:
   - type: hero
     title: Terms & Conditions
-    content: The basic rules for using our website and services.
+    content: Guidelines and terms governing your use of our website.
 isLegal: true
 order: 6
 translationKey: terms
 ---
 
-Last updated: June 24, 2026.
+Last updated: November 8, 2026.
 
-These terms govern your use of this website. This is placeholder copy provided
-with the template — replace it with terms reviewed by your own legal counsel
-before launch.
+These Terms & Conditions govern your access to and use of **ji-chang-tui-jian.life**. By accessing or using this website, you agree to comply with and be bound by these terms.
 
-## Use of Service
+## 1. Acceptance of Terms
 
-By using this website, you agree to:
-- Comply with all applicable laws and regulations
-- Not misuse the available services
-- Maintain the confidentiality of your account information
+By using this site, you acknowledge that you have read, understood, and agree to these terms. If you do not agree with any part, please refrain from using our services.
 
-## Intellectual Property
+## 2. Informational Purpose Only
 
-All content on this website is protected by copyright and other intellectual property rights.
+All reviews, benchmarks, network testing guides, and recommendations provided on this site are for technical research and educational purposes only. Users are responsible for complying with local laws and regulations regarding network usage.
 
-## Limitation of Liability
+## 3. Intellectual Property
 
-We are not liable for damages arising from the use of this website.
+The original content, layout, design tokens, benchmarks, and compilations on this website are the property of ji-chang-tui-jian.life and are protected by applicable copyright laws.
+
+## 4. Limitation of Liability
+
+In no event shall ji-chang-tui-jian.life or its team be liable for any direct, indirect, incidental, or consequential damages resulting from the use or inability to use the content and links provided on this site.
+
+## 5. Contact
+
+For inquiries regarding these terms, reach out to us at **contact@ji-chang-tui-jian.life**.

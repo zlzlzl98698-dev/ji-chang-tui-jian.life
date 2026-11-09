@@ -1,0 +1,173 @@
+---
+export interface Props {
+  brandName: string;
+  aiUnlocks: string[];
+  streamingUnlocks: string[];
+}
+
+const { brandName, aiUnlocks, streamingUnlocks } = Astro.props;
+
+function getStatusType(str: string): "supported" | "partial" | "unsupported" {
+  if (str.includes("视节点") || str.includes("部分") || str.includes("待测")) return "partial";
+  if (str.includes("不") || str.includes("失败")) return "unsupported";
+  return "supported";
+}
+---
+
+<div class="unlock-matrix">
+  <div class="matrix-head">
+    <span class="matrix-head__title">🎬 {brandName} 服务可用性矩阵 (Service Availability Matrix)</span>
+    <span class="matrix-head__badge">测试工具: RegionRestrictionCheck / AI Probe</span>
+  </div>
+
+  <div class="matrix-body">
+    <div class="matrix-section">
+      <h4 class="section-title">🤖 AI 生产力与大模型支持</h4>
+      <div class="matrix-grid">
+        {aiUnlocks.map((item) => {
+          const status = getStatusType(item);
+          return (
+            <div class={`matrix-cell is-${status}`}>
+              <div class="cell-status">
+                <span class="status-indicator"></span>
+                <span class="status-name">{item.split(" ")[0]}</span>
+              </div>
+              <span class="status-detail">{item.split(" ")[1] || "全环境支持"}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+
+    <div class="matrix-section">
+      <h4 class="section-title">📺 全球主流流媒体解锁</h4>
+      <div class="matrix-grid">
+        {streamingUnlocks.map((item) => {
+          const status = getStatusType(item);
+          return (
+            <div class={`matrix-cell is-${status}`}>
+              <div class="cell-status">
+                <span class="status-indicator"></span>
+                <span class="status-name">{item.split(" ")[0]}</span>
+              </div>
+              <span class="status-detail">{item.split(" ")[1] || "4K 满速解锁"}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .unlock-matrix {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin: var(--space-lg) 0;
+  }
+
+  .matrix-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--secondary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .matrix-head__title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--foreground);
+    font-family: var(--font-heading);
+  }
+
+  .matrix-head__badge {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+  }
+
+  .matrix-body {
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .matrix-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0;
+  }
+
+  .matrix-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+  }
+
+  @media (max-width: 640px) {
+    .matrix-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .matrix-cell {
+    background: var(--secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cell-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .is-supported .status-indicator {
+    background: var(--success);
+    box-shadow: 0 0 6px var(--success);
+  }
+
+  .is-partial .status-indicator {
+    background: var(--warning);
+  }
+
+  .is-unsupported .status-indicator {
+    background: var(--destructive);
+  }
+
+  .status-name {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--foreground);
+  }
+
+  .status-detail {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+  }
+</style>

@@ -1,0 +1,227 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { trialAirportsList, tenMinutePeakTestChecklist } from "../../data/topics/freeTrialData";
+import { airports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const guangsu = airports.find((a) => a.slug === "guangsu") || airports[0];
+
+const freeTrialSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "免费试用与退款保障机场全景盘点 (2026最新实测)",
+  description: "全网最新支持0元免绑卡试用、1元体验包及无理由全额退款保障的翻墙机场汇总，附新用户10分钟晚高峰极限压测防踩坑指南。",
+  author: {
+    "@type": "Organization",
+    name: "机场life NOC测评实验室",
+  },
+  datePublished: "2026-02-05",
+  dateModified: "2026-11-09",
+  publisher: {
+    "@type": "Organization",
+    name: "机场life",
+  },
+};
+---
+
+<MarketingLayout
+  title="免费试用与退款保障机场全景盘点 (2026最新实测) | 机场life"
+  description="2026年支持0元白嫖试用、1元尝鲜及无理由退款的翻墙梯子全网盘点。提供新用户10分钟晚高峰压测SOP（连续Ping丢包率、YouTube 4K码率与ChatGPT原生IP检测）。"
+  locale={locale}
+  path="/free-trial"
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(freeTrialSchema)} />
+
+  <article class="container py-12 max-w-5xl mx-auto">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">首页</a></li>
+        <li><span>/</span></li>
+        <li class="text-foreground font-medium" aria-current="page">免费试用与退款保障专题</li>
+      </ol>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="page-head text-center max-w-4xl mx-auto mb-14">
+      <div class="inline-badge mb-3">零风险选型 · 真实验货指南</div>
+      <h1 class="page-title mb-4">免费试用与退款保障机场全景盘点</h1>
+      <p class="page-lead">
+        买前先验货，拒绝先交钱再受气。本专题盘点全网真正支持 0 元免绑卡试用、低价体验包及无理由退款承诺的优质机场，并附赠实操验货排雷指南。
+      </p>
+    </header>
+
+    <!-- Sub-category Quick Links -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-14">
+      <a href="/free-trial/instant" class="p-5 rounded-xl border border-border bg-card hover:border-primary transition-all">
+        <span class="text-xs font-bold text-primary mb-1 block">零门槛</span>
+        <h3 class="font-bold text-base mb-1">0元免绑卡试用清单</h3>
+        <p class="text-xs text-muted-foreground">注册即送流量、无需绑定支付方式的白嫖机场实测汇总与领取条件。</p>
+      </a>
+
+      <a href="/free-trial/refund" class="p-5 rounded-xl border border-border bg-card hover:border-primary transition-all">
+        <span class="text-xs font-bold text-primary mb-1 block">退款保障</span>
+        <h3 class="font-bold text-base mb-1">支持无理由退款机场清单</h3>
+        <p class="text-xs text-muted-foreground">支持 24 小时至 7 天不满意退款、按比例退款的正规品质服务商盘点。</p>
+      </a>
+
+      <a href="/free-trial/testing" class="p-5 rounded-xl border border-border bg-card hover:border-primary transition-all">
+        <span class="text-xs font-bold text-muted-foreground mb-1 block">极限验货</span>
+        <h3 class="font-bold text-base mb-1">10分钟晚高峰压测指南</h3>
+        <p class="text-xs text-muted-foreground">丢包率检测、YouTube 4K码率峰值与流媒体原生双 ISP IP 纯净度实操。</p>
+      </a>
+    </div>
+
+    <!-- Chapter 1: Verified Trial Airports Directory -->
+    <section class="prose-section mb-16">
+      <h2 class="section-title">一、经实测支持试用与退款保障的品牌实录</h2>
+      <div class="space-y-6 my-6">
+        {trialAirportsList.map((airport) => (
+          <div class={`p-6 rounded-2xl border ${airport.slug === "guangsu" ? "border-primary/50 bg-primary/5" : "border-border bg-card"} flex flex-col md:flex-row items-start md:items-center justify-between gap-6`}>
+            <div class="space-y-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-primary text-primary-foreground">
+                  {airport.trialType}
+                </span>
+                <h3 class="text-lg font-bold text-foreground">{airport.name}</h3>
+                {airport.slug === "guangsu" && (
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/20 text-primary">
+                    🏆 强烈推荐
+                  </span>
+                )}
+              </div>
+              <p class="text-xs text-muted-foreground leading-relaxed max-w-2xl">
+                <strong>领取条件与政策：</strong>{airport.claimCondition}<br />
+                <strong>线路品质：</strong>{airport.lineQuality}
+              </p>
+              <div class="text-xs text-foreground font-semibold">
+                NOC 评审评语：{airport.verdict}
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row md:flex-col gap-2 w-full md:w-auto shrink-0">
+              <a
+                href={airport.affLink}
+                target="_blank"
+                rel="nofollow sponsored noopener"
+                class="cta-btn cta-primary text-xs whitespace-nowrap"
+              >
+                前往领取试用 / 选购
+              </a>
+              <a href={`/airports/${airport.slug}`} class="cta-btn cta-secondary text-xs whitespace-nowrap">
+                查看全量评测
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Chapter 2: 10-Minute Peak Test SOP -->
+    <section class="prose-section mb-16">
+      <h2 class="section-title">二、{tenMinutePeakTestChecklist.title}</h2>
+      <div class="p-4 rounded-xl bg-muted text-foreground text-xs font-semibold mb-6">
+        ⏱️ {tenMinutePeakTestChecklist.executionTime}
+      </div>
+
+      <div class="space-y-4">
+        {tenMinutePeakTestChecklist.steps.map((st) => (
+          <div class="p-5 rounded-xl border border-border bg-card space-y-2">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-primary text-primary-foreground font-bold flex items-center justify-center text-xs">
+                0{st.step}
+              </span>
+              <h3 class="font-bold text-sm text-foreground">{st.name}</h3>
+            </div>
+            <p class="text-xs text-muted-foreground pl-8">
+              <strong>使用工具/操作：</strong>{st.tool}
+            </p>
+            <p class="text-xs text-foreground pl-8 leading-relaxed">
+              <strong>验收合格标准：</strong>{st.standard}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Chapter 3: Guangsu Safe Pick -->
+    <section class="p-8 rounded-2xl border border-primary/40 bg-card text-center">
+      <div class="inline-badge mb-3">极致试错成本 · 专线首选</div>
+      <h2 class="text-2xl font-black text-foreground mb-3">
+        光速云 (Guangsu Cloud) —— 24小时安心体验，不满意极速退款
+      </h2>
+      <p class="text-sm text-muted-foreground max-w-2xl mx-auto mb-6 leading-relaxed">
+        担心买了不好用？光速云提供业内极高标准的售后服务承诺。轻量年付仅需 99 元（折合 8.25 元/月），深港企业专线真实测速，首日体验不符合预期直接工单全额退款。
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a
+          href={guangsu.affLink}
+          target="_blank"
+          rel="nofollow sponsored noopener"
+          class="cta-btn cta-primary px-8 py-3 text-sm font-bold shadow-md"
+        >
+          直达光速云官网 (优惠码 AMM)
+        </a>
+        <a href="/rankings" class="cta-btn cta-secondary px-8 py-3 text-sm font-bold">
+          查看 2026 十大推荐榜单
+        </a>
+      </div>
+    </section>
+  </article>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--primary);
+  }
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .page-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .section-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--foreground);
+    margin-bottom: 0.5rem;
+  }
+  .section-text {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--muted-foreground);
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  .cta-secondary {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    border: 1px solid var(--border);
+  }
+</style>

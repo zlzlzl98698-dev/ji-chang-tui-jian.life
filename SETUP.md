@@ -41,7 +41,7 @@ pnpm preview   # serve the production build locally
 
 ```bash
 pnpm build
-npx wrangler pages deploy dist --project-name=astro-cloudflare --branch=main
+npx wrangler pages deploy dist --project-name=ji-chang-tui-jian --branch=main
 ```
 
 ## R2 media (optional)

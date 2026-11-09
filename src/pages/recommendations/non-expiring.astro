@@ -1,0 +1,189 @@
+---
+import MarketingLayout from "../../layouts/MarketingLayout.astro";
+import { getAirportsByCategory } from "../../data/topics/recommendationsData";
+import { airports } from "../../data/airports";
+
+const locale = (Astro.currentLocale || "en") as "en";
+const catAirports = getAirportsByCategory("non-expiring");
+const guangsu = airports.find((a) => a.slug === "guangsu") || airports[0];
+---
+
+<MarketingLayout
+  title="按量计费与不限时轻量备用机场全景指南 (2026最新横评) | 机场life"
+  description="2026年按量计费不限时机场梯子盘点推荐：流量永久有效不过期、用多少扣多少，拒绝固定月租浪费。适合低频出海查资料、备用双轨容灾与多设备挂机用户。"
+  locale={locale}
+  path="/recommendations/non-expiring"
+>
+  <article class="container py-12 max-w-5xl mx-auto">
+    <nav class="breadcrumb mb-6" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-muted-foreground">
+        <li><a href="/" class="hover:text-primary transition-colors">首页</a></li>
+        <li><span>/</span></li>
+        <li><a href="/recommendations" class="hover:text-primary transition-colors">选购指南</a></li>
+        <li><span>/</span></li>
+        <li class="text-foreground font-medium" aria-current="page">按量不限时专题</li>
+      </ol>
+    </nav>
+
+    <header class="page-head max-w-4xl mb-12">
+      <div class="inline-badge mb-3">按量计费专题 · 流量永久不过期</div>
+      <h1 class="page-title mb-4">按量计费与不限时轻量备用机场全景指南</h1>
+      <p class="page-lead">
+        对于每月出海频次低、流量用不完的用户，购买包月套餐就是在白白送钱。按量计费套餐实行『买一次流量用几年、不过期不清零』，是绝佳的个人容灾保底工具。
+      </p>
+    </header>
+
+    <!-- Top Pick Box -->
+    <div class="p-6 rounded-2xl border border-primary/40 bg-card mb-12">
+      <div class="flex items-center gap-2 text-xs font-bold text-primary mb-2">
+        <span>🏆 终身备用神级套餐 · 专线品质不过期</span>
+      </div>
+      <h2 class="text-2xl font-bold text-foreground mb-2">光速云 (Guangsu Cloud) —— 致敬斯诺克 147 永久套餐</h2>
+      <p class="text-sm text-muted-foreground mb-4 leading-relaxed">
+        仅需 147 元即可获得 247GB 企业级 IEPL 物理专线流量，永久有效不设到期时间！无论是作为电脑副梯子、手机备用订阅，还是出国临时查资料，一次充值安心多年。
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <a
+          href={guangsu.affLink}
+          target="_blank"
+          rel="nofollow sponsored noopener"
+          class="cta-btn cta-primary"
+        >
+          直达光速云选购 147 永久套餐
+        </a>
+        <a href="/airports/guangsu" class="cta-btn cta-secondary">
+          查看光速云深度评测
+        </a>
+      </div>
+    </div>
+
+    <!-- Recommended List -->
+    <section class="mb-14">
+      <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+        <span class="indicator-dot"></span> 严选支持不限时按量计费的品牌列表
+      </h2>
+      <div class="space-y-6">
+        {catAirports.map((airport, idx) => (
+          <div class="p-6 rounded-xl border border-border bg-card flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div class="space-y-2">
+              <div class="flex items-center gap-3">
+                <span class="text-sm font-bold text-muted-foreground">0{idx + 1}</span>
+                <h3 class="text-lg font-bold text-foreground">
+                  <a href={`/airports/${airport.slug}`} class="hover:text-primary transition-colors">
+                    {airport.name}
+                  </a>
+                </h3>
+                <span class="px-2 py-0.5 rounded text-xs bg-muted text-muted-foreground font-medium">
+                  {airport.lineType}
+                </span>
+              </div>
+              <p class="text-xs text-muted-foreground max-w-xl">{airport.description}</p>
+              <div class="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                <span>套餐特征：<strong class="text-primary">永久不过期 / 按用量扣费</strong></span>
+                <span>·</span>
+                <span>协议：{airport.protocols.join(", ")}</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 w-full md:w-auto shrink-0">
+              <a
+                href={airport.affLink}
+                target="_blank"
+                rel="nofollow sponsored noopener"
+                class="cta-btn cta-primary text-xs"
+              >
+                访问官网
+              </a>
+              <a href={`/airports/${airport.slug}`} class="cta-btn cta-secondary text-xs">
+                详细评测
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Deep Analysis -->
+    <section class="prose-section mb-14">
+      <h2 class="section-title">为什么每个人都应该配置一个不限时备用套餐？</h2>
+      <div class="space-y-4 text-sm text-muted-foreground leading-relaxed">
+        <p>
+          在翻墙圈里，有一个著名的运维法则叫『双轨冗余定律』：<strong>永远不要把所有希望寄托在一家服务商身上。</strong>
+        </p>
+        <p>
+          即使您平时的主力机场是顶级月付专线，一旦遇到不可抗力（比如主力站由于域名污染更新未及时通知、国内机房例行断电维护半天），您的所有工作和沟通就会陷入停滞。此时，如果您在客户端里配置了一个【不限时按量备用包】，只需要鼠标轻轻一点切换分组，就能瞬间恢复网络连接，化险为夷。
+        </p>
+      </div>
+    </section>
+
+    <!-- Navigation Hub Footer -->
+    <div class="p-6 rounded-xl border border-border bg-muted/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <h4 class="font-bold text-sm text-foreground">探索其他细分场景选购指南</h4>
+        <p class="text-xs text-muted-foreground">涵盖IEPL企业专线、平价月付与流媒体解锁全景推荐</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="/recommendations/iepl" class="cta-btn cta-secondary text-xs">IEPL企业专线</a>
+        <a href="/recommendations/budget" class="cta-btn cta-secondary text-xs">平价性价比</a>
+        <a href="/recommendations/streaming" class="cta-btn cta-secondary text-xs">流媒体解锁</a>
+      </div>
+    </div>
+  </article>
+</MarketingLayout>
+
+<style>
+  .inline-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    background: var(--muted);
+    color: var(--primary);
+  }
+  .page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+  .page-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .indicator-dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 9999px;
+    background: var(--primary);
+    display: inline-block;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  .cta-secondary {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    border: 1px solid var(--border);
+  }
+  .section-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--foreground);
+    margin-bottom: 1rem;
+  }
+</style>

@@ -23,6 +23,7 @@ export interface Props {
   path: string;
   ogImage?: string;
   canonical?: string;
+  robots?: string;
   article?: SEOArticle;
   jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
@@ -34,6 +35,7 @@ const {
   path,
   ogImage,
   canonical,
+  robots = "index, follow",
   article,
   jsonLd,
 } = Astro.props as Props;
@@ -59,6 +61,7 @@ const schemas = Array.isArray(schema) ? schema : [schema];
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalHref} />
+<meta name="robots" content={robots} />
 
 {
   verification.google && (
@@ -66,6 +69,16 @@ const schemas = Array.isArray(schema) ? schema : [schema];
   )
 }
 {verification.bing && <meta name="msvalidate.01" content={verification.bing} />}
+{
+  verification.shenma && (
+    <meta name="shenma-site-verification" content={verification.shenma} />
+  )
+}
+{
+  verification.baidu && (
+    <meta name="baidu-site-verification" content={verification.baidu} />
+  )
+}
 
 {
   links.map((link) => (

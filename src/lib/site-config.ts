@@ -4,7 +4,7 @@
 export type Locale = "en";
 
 export const SITE_CONFIG = {
-  url: "https://astro-cloudflare-starter.pages.dev",
+  url: "https://ji-chang-tui-jian.life",
   /** Default locale for fallback. */
   defaultLocale: "en" as const,
   /** Supported locales. */
@@ -18,7 +18,7 @@ export const SITE_CONFIG = {
     en: "en",
   } as const,
   /** Site name for metadata and JSON-LD. */
-  name: "Astro Cloudflare",
+  name: "机场life",
   /** Short description for metadata. */
-  description: "Marketing, blog, and docs starter — multilanguage-ready.",
+  description: "优质稳定网络加速与节点订阅测评指南，提供全方位翻墙机场测速、协议解析、优惠折扣及新手配置教程。",
 } as const;
